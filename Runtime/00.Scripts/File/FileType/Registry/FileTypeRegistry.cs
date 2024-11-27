@@ -1,14 +1,15 @@
 using System;
 using System.Collections.Generic;
 
+// ReSharper disable once CheckNamespace
 namespace Creator_Hian.Unity.Common
 {
     public static class FileTypeRegistry
     {
-        private static readonly Dictionary<string, FileTypeDefinition> _typesByExtension =
+        private static readonly Dictionary<string, FileTypeDefinition> TypesByExtension =
             new(StringComparer.OrdinalIgnoreCase);
 
-        private static readonly Dictionary<FileCategory, HashSet<FileTypeDefinition>> _typesByCategory =
+        private static readonly Dictionary<FileCategory, HashSet<FileTypeDefinition>> TypesByCategory =
             new();
 
         static FileTypeRegistry()
@@ -39,33 +40,35 @@ namespace Creator_Hian.Unity.Common
             RegisterType(FileTypes.Unity.Shader);
         }
 
+        // ReSharper disable once MemberCanBePrivate.Global
         public static void RegisterType(FileTypeDefinition definition)
         {
-            _typesByExtension[definition.Extension] = definition;
+            TypesByExtension[definition.Extension] = definition;
 
-            if (!_typesByCategory.TryGetValue(definition.Category, out var categoryTypes))
+            if (!TypesByCategory.TryGetValue(definition.Category, out var categoryTypes))
             {
                 categoryTypes = new HashSet<FileTypeDefinition>();
-                _typesByCategory[definition.Category] = categoryTypes;
+                TypesByCategory[definition.Category] = categoryTypes;
             }
 
             categoryTypes.Add(definition);
         }
 
+        // ReSharper disable once MemberCanBePrivate.Global
         public static FileTypeDefinition GetByExtension(string extension)
         {
             if (string.IsNullOrEmpty(extension))
                 return CreateUnknownType(extension);
 
             extension = extension.ToLowerInvariant();
-            return _typesByExtension.TryGetValue(extension, out var type)
+            return TypesByExtension.TryGetValue(extension, out var type)
                 ? type
                 : CreateUnknownType(extension);
         }
 
         public static IReadOnlyCollection<FileTypeDefinition> GetByCategory(FileCategory category)
         {
-            return _typesByCategory.TryGetValue(category, out var types)
+            return TypesByCategory.TryGetValue(category, out var types)
                 ? types
                 : Array.Empty<FileTypeDefinition>();
         }

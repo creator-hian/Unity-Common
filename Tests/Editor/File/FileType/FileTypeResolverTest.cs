@@ -1,30 +1,45 @@
 using System;
 using System.IO;
 using NUnit.Framework;
-using UnityEngine;
 using System.Linq;
 using Creator_Hian.Unity.Common;
+using Creator_Hian.Unity.Common.Tests;
 
+/// <summary>
+/// FileTypeResolver의 기본 기능을 테스트합니다.
+/// </summary>
+// ReSharper disable once CheckNamespace
 public class FileTypeResolverTest
 {
     private IFileTypeResolver _resolver;
 
+    /// <summary>
+    /// 각 테스트 전에 새로운 FileTypeResolver 인스턴스를 생성합니다.
+    /// </summary>
     [SetUp]
     public void Setup()
     {
         _resolver = new FileTypeResolver();
     }
 
+    /// <summary>
+    /// 일반적인 파일 타입에 대한 해석이 올바르게 동작하는지 테스트합니다.
+    /// 텍스트(.txt), JSON(.json), 이미지(.png), 압축(.zip) 파일의 카테고리가 올바르게 매핑되는지 확인합니다.
+    /// </summary>
     [Test]
     public void GetFileType_CommonTypes_ReturnsCorrectType()
     {
         // Arrange
         var testCases = new[]
         {
-            ("test.txt", FileCategory.Common.Text),
-            ("data.json", FileCategory.Common.Data),
-            ("image.png", FileCategory.Common.Image),
-            ("archive.zip", FileCategory.Common.Archive)
+            ($"{FileTypeTestConstants.Paths.ValidFileName}{FileTypeTestConstants.Extensions.Text}", 
+                FileCategory.Common.Text),
+            ($"{FileTypeTestConstants.Paths.ValidFileName}{FileTypeTestConstants.Extensions.Json}", 
+                FileCategory.Common.Data),
+            ($"{FileTypeTestConstants.Paths.ValidFileName}{FileTypeTestConstants.Extensions.Png}", 
+                FileCategory.Common.Image),
+            ($"{FileTypeTestConstants.Paths.ValidFileName}{FileTypeTestConstants.Extensions.Zip}", 
+                FileCategory.Common.Archive)
         };
 
         // Act & Assert
@@ -36,16 +51,20 @@ public class FileTypeResolverTest
         }
     }
 
+    /// <summary>
+    /// Unity 관련 파일 타입에 대한 해석이 올바르게 동작하는지 테스트합니다.
+    /// 씬(.unity), 프리팹(.prefab), 애니메이터(.controller), 애니메이션(.anim) 파일의 카테고리가 올바르게 매핑되는지 확인합니다.
+    /// </summary>
     [Test]
     public void GetFileType_UnityTypes_ReturnsCorrectType()
     {
         // Arrange
         var testCases = new[]
         {
-            ("Level1.unity", FileCategory.Unity.Scene),
-            ("Player.prefab", FileCategory.Unity.Prefab),
-            ("Character.controller", FileCategory.Unity.Animation),
-            ("Walk.anim", FileCategory.Unity.Animation)
+            ($"Level1{FileTypeTestConstants.Extensions.Scene}", FileCategory.Unity.Scene),
+            ($"Player{FileTypeTestConstants.Extensions.Prefab}", FileCategory.Unity.Prefab),
+            ($"Character{FileTypeTestConstants.Extensions.Controller}", FileCategory.Unity.Animation),
+            ($"Walk{FileTypeTestConstants.Extensions.Animation}", FileCategory.Unity.Animation)
         };
 
         // Act & Assert
@@ -57,6 +76,9 @@ public class FileTypeResolverTest
         }
     }
 
+    /// <summary>
+    /// Image 카테고리에 속한 모든 파일 타입(png, jpg, gif)을 올바르게 반환하는지 테스트합니다.
+    /// </summary>
     [Test]
     public void GetTypesByCategory_ImageCategory_ReturnsAllImageTypes()
     {
@@ -64,11 +86,16 @@ public class FileTypeResolverTest
         var imageTypes = _resolver.GetTypesByCategory(FileCategory.Common.Image).ToList();
 
         // Assert
-        Assert.That(imageTypes, Has.Count.EqualTo(3)); // png, jpg, gif
+        Assert.That(imageTypes, Has.Count.EqualTo(3));
         Assert.That(imageTypes.Select(t => t.Extension),
-            Contains.Item(".png").And.Contains(".jpg").And.Contains(".gif"));
+            Contains.Item(FileTypeTestConstants.Extensions.Png)
+                .And.Contains(FileTypeTestConstants.Extensions.Jpeg)
+                .And.Contains(FileTypeTestConstants.Extensions.Gif));
     }
 
+    /// <summary>
+    /// Animation 카테고리에 속한 모든 파일 타입(.anim, .controller)을 올바르게 반환하는지 테스트합니다.
+    /// </summary>
     [Test]
     public void GetTypesByCategory_AnimationCategory_ReturnsAllAnimationTypes()
     {
@@ -76,21 +103,26 @@ public class FileTypeResolverTest
         var animTypes = _resolver.GetTypesByCategory(FileCategory.Unity.Animation).ToList();
 
         // Assert
-        Assert.That(animTypes, Has.Count.EqualTo(2)); // .anim, .controller
+        Assert.That(animTypes, Has.Count.EqualTo(2));
         Assert.That(animTypes.Select(t => t.Extension),
-            Contains.Item(".anim").And.Contains(".controller"));
+            Contains.Item(FileTypeTestConstants.Extensions.Animation)
+                .And.Contains(FileTypeTestConstants.Extensions.Controller));
     }
 
+    /// <summary>
+    /// IsTypeOf 메서드가 파일 경로와 카테고리를 올바르게 비교하는지 테스트합니다.
+    /// 이미지, 텍스트, 애니메이터, 씬 파일에 대한 카테고리 매칭을 검증합니다.
+    /// </summary>
     [Test]
     public void IsTypeOf_ValidPaths_ReturnsCorrectResult()
     {
         // Arrange
         var testCases = new[]
         {
-            ("test.png", FileCategory.Common.Image, true),
-            ("test.txt", FileCategory.Common.Image, false),
-            ("character.controller", FileCategory.Unity.Animation, true),
-            ("level.unity", FileCategory.Unity.Scene, true)
+            ($"test{FileTypeTestConstants.Extensions.Png}", FileCategory.Common.Image, true),
+            ($"test{FileTypeTestConstants.Extensions.Text}", FileCategory.Common.Image, false),
+            ($"character{FileTypeTestConstants.Extensions.Controller}", FileCategory.Unity.Animation, true),
+            ($"level{FileTypeTestConstants.Extensions.Scene}", FileCategory.Unity.Scene, true)
         };
 
         // Act & Assert
@@ -102,11 +134,14 @@ public class FileTypeResolverTest
         }
     }
 
+    /// <summary>
+    /// 알 수 없는 확장자(.xyz)를 가진 파일에 대해 Unknown 타입을 반환하는지 테스트합니다.
+    /// </summary>
     [Test]
     public void GetFileType_InvalidPath_ReturnsUnknownType()
     {
         // Arrange
-        string invalidPath = "file.xyz";
+        string invalidPath = $"file{FileTypeTestConstants.Extensions.Unknown}";
 
         // Act
         var fileType = _resolver.GetFileType(invalidPath);
@@ -115,15 +150,14 @@ public class FileTypeResolverTest
         Assert.That(fileType.Category, Is.EqualTo(FileCategory.Common.Unknown));
     }
 
+    /// <summary>
+    /// null이나 빈 문자열 경로에 대해 ArgumentNullException이 발생하는지 테스트합니다.
+    /// </summary>
     [Test]
     public void GetFileType_NullOrEmptyPath_ThrowsArgumentNullException()
     {
-        // Arrange
-        string nullPath = null;
-        string emptyPath = "";
-
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => _resolver.GetFileType(nullPath));
-        Assert.Throws<ArgumentNullException>(() => _resolver.GetFileType(emptyPath));
+        Assert.Throws<ArgumentNullException>(() => _resolver.GetFileType(null));
+        Assert.Throws<ArgumentNullException>(() => _resolver.GetFileType(string.Empty));
     }
 }

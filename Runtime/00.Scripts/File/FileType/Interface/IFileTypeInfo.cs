@@ -1,3 +1,4 @@
+// ReSharper disable once CheckNamespace
 namespace Creator_Hian.Unity.Common
 {
     /// <summary>
