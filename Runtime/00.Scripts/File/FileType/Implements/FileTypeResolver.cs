@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
+// ReSharper disable once CheckNamespace
 namespace Creator_Hian.Unity.Common
 {
     /// <summary>
@@ -11,11 +12,13 @@ namespace Creator_Hian.Unity.Common
     {
         private readonly Dictionary<string, FileTypeDefinition> _typesByExtension;
         private readonly Dictionary<FileCategory, HashSet<FileTypeDefinition>> _typesByCategory;
+        private readonly Dictionary<string, HashSet<FileTypeDefinition>> _typesByMimeType;
 
         public FileTypeResolver()
         {
             _typesByExtension = new Dictionary<string, FileTypeDefinition>(StringComparer.OrdinalIgnoreCase);
             _typesByCategory = new Dictionary<FileCategory, HashSet<FileTypeDefinition>>();
+            _typesByMimeType = new Dictionary<string, HashSet<FileTypeDefinition>>(StringComparer.OrdinalIgnoreCase);
             
             // 초기화 보장
             FileCategory.EnsureInitialized();
@@ -24,14 +27,8 @@ namespace Creator_Hian.Unity.Common
 
         private void RegisterBuiltInTypes()
         {
-            // Common Types
-            foreach (var type in FileTypes.Common.GetAll())
-            {
-                RegisterType(type);
-            }
-
-            // Unity Types
-            foreach (var type in FileTypes.Unity.GetAll())
+            // 모든 등록된 타입 처리
+            foreach (var type in FileTypes.GetAllTypes())
             {
                 RegisterType(type);
             }
@@ -48,6 +45,16 @@ namespace Creator_Hian.Unity.Common
             }
 
             categoryTypes.Add(definition);
+
+            if (!string.IsNullOrEmpty(definition.MimeType))
+            {
+                if (!_typesByMimeType.TryGetValue(definition.MimeType, out var mimeTypes))
+                {
+                    mimeTypes = new HashSet<FileTypeDefinition>();
+                    _typesByMimeType[definition.MimeType] = mimeTypes;
+                }
+                mimeTypes.Add(definition);
+            }
         }
 
         public IFileTypeInfo GetFileType(string path)
@@ -83,6 +90,23 @@ namespace Creator_Hian.Unity.Common
         {
             var fileType = GetFileType(path);
             return fileType.Category == category;
+        }
+
+        public IReadOnlyCollection<IFileTypeInfo> GetTypesByMimeType(string mimeType)
+        {
+            if (string.IsNullOrEmpty(mimeType))
+                return Array.Empty<IFileTypeInfo>();
+
+            try
+            {
+                return _typesByMimeType.TryGetValue(mimeType, out var types)
+                    ? types
+                    : Array.Empty<IFileTypeInfo>();
+            }
+            catch (Exception ex)
+            {
+                throw new FileTypeResolveException($"MIME 타입으로 파일 타입을 조회하는 중 오류가 발생했습니다: {mimeType}", ex);
+            }
         }
 
         private static FileTypeDefinition CreateUnknownType(string extension)
