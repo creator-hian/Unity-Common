@@ -1,5 +1,5 @@
 {
-    "name": "Creator_Hian.Unity.Common.Tests.core",
+    "name": "Creator-Hian.Unity.Common.Tests.core",
     "rootNamespace": "",
     "references": [
         "UnityEngine.TestRunner",
