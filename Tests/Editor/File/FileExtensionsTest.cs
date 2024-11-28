@@ -18,20 +18,26 @@ public class FileExtensionsTest
     private string _testDirectoryPath;
     private byte[] _testData;
 
+    /// <summary>
+    /// 각 테스트 전에 임시 디렉토리를 생성하고 테스트 데이터를 준비합니다.
+    /// </summary>
     [SetUp]
     public void SetUp()
     {
         // 각 테스트마다 새로운 디렉토리 생성
         _testDirectoryPath = Path.Combine(
-            Application.temporaryCachePath, 
-            "FileExtensionsTest", 
+            Application.temporaryCachePath,
+            "FileExtensionsTest",
             Guid.NewGuid().ToString());
-        
+
         Directory.CreateDirectory(_testDirectoryPath);
         // 테스트용 데이터 생성
         _testData = Encoding.UTF8.GetBytes(FileTypeTestConstants.Contents.TextContent);
     }
 
+    /// <summary>
+    /// 각 테스트 후에 임시 디렉토리를 정리합니다.
+    /// </summary>
     [TearDown]
     // ReSharper disable once CognitiveComplexity
     public void TearDown()
@@ -68,8 +74,12 @@ public class FileExtensionsTest
 
     /// <summary>
     /// 유효한 경로에 파일을 동기적으로 쓰는 기본 동작을 테스트합니다.
-    /// 파일이 생성되고 데이터가 정확히 쓰여졌는지 확인합니다.
     /// </summary>
+    /// <remarks>
+    /// 검증 항목:
+    /// 1. 파일이 생성되는지 확인
+    /// 2. 데이터가 정확히 쓰여졌는지 확인
+    /// </remarks>
     [Test]
     public void WriteFileToPath_ValidPath_CreatesFile()
     {
@@ -87,8 +97,12 @@ public class FileExtensionsTest
 
     /// <summary>
     /// 유효한 경로에 파일을 비동기적으로 쓰는 동작을 테스트합니다.
-    /// 비동기 작업이 완료된 후 파일이 생성되고 데이터가 정확히 쓰여졌는지 확인합니다.
     /// </summary>
+    /// <remarks>
+    /// 검증 항목:
+    /// 1. 비동기 작업이 완료된 후 파일 존재 확인
+    /// 2. 쓰여진 데이터의 정확성 검증
+    /// </remarks>
     [Test]
     public async Task WriteFileToPathAsync_ValidPath_CreatesFile()
     {
@@ -124,7 +138,7 @@ public class FileExtensionsTest
     /// 잘못된 경로로 파일 쓰기를 시도할 때의 예외 처리를 테스트합니다.
     /// </summary>
     /// <remarks>
-    /// 검증하는 예외 상황:
+    /// 검증 항목:
     /// 1. 너무 긴 경로명(300자)에 대한 FilePathException 발생
     /// 2. 잘못된 문자('*')가 포함된 경로에 대한 처리
     /// </remarks>
@@ -175,8 +189,12 @@ public class FileExtensionsTest
 
     /// <summary>
     /// 중첩된 디렉토리 구조에서 파일 쓰기가 정상 동작하는지 테스트합니다.
-    /// 존재하지 않는 중첩 디렉토리가 자동으로 생성되고 파일이 정상적으로 생성되는지 확인합니다.
     /// </summary>
+    /// <remarks>
+    /// 검증 항목:
+    /// 1. 존재하지 않는 중첩 디렉토리 자동 생성
+    /// 2. 파일이 정상적으로 생성되는지 확인
+    /// </remarks>
     [Test]
     public void WriteFileToPath_CreateNestedDirectories_Success()
     {
@@ -212,8 +230,12 @@ public class FileExtensionsTest
 
     /// <summary>
     /// 대용량 파일(1MB)의 비동기식 쓰기가 정상 동작하는지 테스트합니다.
-    /// 사용자 정의 버퍼 크기(8192)로 쓰기 작업이 수행되는지 확인합니다.
     /// </summary>
+    /// <remarks>
+    /// 검증 항목:
+    /// 1. 사용자 정의 버퍼 크기(8192)로 쓰기 작업 수행
+    /// 2. 파일 데이터의 정확성 검증
+    /// </remarks>
     [Test]
     public async Task WriteFileToPathAsync_LargeFile_Success()
     {
@@ -247,7 +269,6 @@ public class FileExtensionsTest
         }
     }
 
-
     /// <summary>
     /// 읽기 전용으로 파일이 열려있을 때 잠금 상태가 false로 반환되는지 테스트합니다.
     /// </summary>
@@ -257,9 +278,9 @@ public class FileExtensionsTest
         // Arrange
         string filePath = Path.Combine(_testDirectoryPath, "readLocked.txt");
         FileExtensions.WriteFileToPath(filePath, _testData);
-        
+
         using var stream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-        
+
         // Act & Assert
         Assert.That(FileExtensions.IsFileLocked(filePath), Is.False);
     }
@@ -273,13 +294,12 @@ public class FileExtensionsTest
         // Arrange
         string filePath = Path.Combine(_testDirectoryPath, "writeLocked.txt");
         FileExtensions.WriteFileToPath(filePath, _testData);
-        
+
         using var stream = File.Open(filePath, FileMode.Open, FileAccess.Write, FileShare.None);
-        
+
         // Act & Assert
         Assert.That(FileExtensions.IsFileLocked(filePath), Is.True);
     }
-
 
     /// <summary>
     /// 동일한 내용을 가진 두 파일을 비교할 때 true를 반환하는지 테스트합니다.
@@ -308,11 +328,6 @@ public class FileExtensionsTest
     /// <summary>
     /// 서로 다른 내용을 가진 두 파일을 비교할 때 false를 반환하는지 테스트합니다.
     /// </summary>
-    /// <remarks>
-    /// 검증 항목:
-    /// 1. 서로 다른 내용의 파일 생성
-    /// 2. CompareFilesAsync가 false를 반환하는지 확인
-    /// </remarks>
     [Test]
     public async Task CompareFilesAsync_WithDifferentFiles_ReturnsFalse()
     {
@@ -353,7 +368,7 @@ public class FileExtensionsTest
         cts.Cancel();
 
         // Act & Assert
-        Assert.ThrowsAsync<FileOperationException>(() => 
+        Assert.ThrowsAsync<FileOperationException>(() =>
             FileExtensions.CompareFilesAsync(path1, path2, cancellationToken: cts.Token));
     }
 
@@ -377,7 +392,7 @@ public class FileExtensionsTest
         new Random().NextBytes(largeData);
 
         using var cts = new CancellationTokenSource();
-        
+
         // 즉시 취소
         cts.Cancel();
 
@@ -385,8 +400,8 @@ public class FileExtensionsTest
         {
             // Act
             await FileExtensions.WriteFileToPathAsync(
-                filePath, 
-                largeData, 
+                filePath,
+                largeData,
                 bufferSize: 1024,
                 cancellationToken: cts.Token);
 
@@ -409,7 +424,7 @@ public class FileExtensionsTest
         // Arrange
         string sourcePath = Path.Combine(_testDirectoryPath, "source.txt");
         string destPath = Path.Combine(_testDirectoryPath, "dest.txt");
-        
+
         byte[] testData = Encoding.UTF8.GetBytes("Test content");
         await File.WriteAllBytesAsync(sourcePath, testData);
 
@@ -431,7 +446,7 @@ public class FileExtensionsTest
         // Arrange
         string sourcePath = Path.Combine(_testDirectoryPath, "source.txt");
         string destPath = Path.Combine(_testDirectoryPath, "dest.txt");
-        
+
         // 더 작은 크기의 테스트 파일 생성 (1MB)
         byte[] testData = new byte[1024 * 1024];
         new Random().NextBytes(testData);
@@ -446,7 +461,7 @@ public class FileExtensionsTest
         {
             // Act
             await FileExtensions.CopyFileAsync(
-                sourcePath, 
+                sourcePath,
                 destPath,
                 cancellationToken: cts.Token);
 
@@ -469,10 +484,10 @@ public class FileExtensionsTest
         // Arrange
         string sourcePath = Path.Combine(_testDirectoryPath, "source.txt");
         string destPath = Path.Combine(_testDirectoryPath, "dest.txt");
-        
+
         byte[] initialData = Encoding.UTF8.GetBytes("Initial content");
         byte[] newData = Encoding.UTF8.GetBytes("New content");
-        
+
         await File.WriteAllBytesAsync(sourcePath, newData);
         await File.WriteAllBytesAsync(destPath, initialData);
 
@@ -485,6 +500,9 @@ public class FileExtensionsTest
         Assert.That(result, Is.EqualTo(newData));
     }
 
+    /// <summary>
+    /// 다양한 버퍼 크기로 파일 쓰기가 정상 동작하는지 테스트합니다.
+    /// </summary>
     [Test]
     public async Task WriteFileToPathAsync_WithDifferentBufferSizes()
     {
@@ -528,6 +546,15 @@ public class FileExtensionsTest
         }
     }
 
+    /// <summary>
+    /// 매우 큰 파일의 비동기 쓰기가 정상 동작하는지 테스트합니다.
+    /// </summary>
+    /// <remarks>
+    /// 검증 항목:
+    /// 1. LargeFileThreshold보다 큰 파일 쓰기
+    /// 2. 메모리 사용량 모니터링
+    /// 3. 파일 데이터의 정확성 검증
+    /// </remarks>
     [Test]
     public async Task WriteFileToPathAsync_WithVeryLargeFile()
     {
@@ -538,7 +565,7 @@ public class FileExtensionsTest
         new Random().NextBytes(largeData);
 
         var memoryBefore = GC.GetTotalMemory(true);
-        
+
         try
         {
             // Act
@@ -551,8 +578,8 @@ public class FileExtensionsTest
             // 메모리 사용량 확인 (급격한 증가가 없어야 함)
             var memoryAfter = GC.GetTotalMemory(false);
             var memoryDiff = memoryAfter - memoryBefore;
-            
-            Assert.That(memoryDiff, Is.LessThan(fileSize / 2), 
+
+            Assert.That(memoryDiff, Is.LessThan(fileSize / 2),
                 "메모리 사용량이 너무 높습니다");
 
             // 파일 내용 검증
@@ -569,9 +596,9 @@ public class FileExtensionsTest
                     Buffer.BlockCopy(buffer, 0, readData, totalBytesRead, bytesRead);
                     totalBytesRead += bytesRead;
                 }
-                Assert.That(totalBytesRead, Is.EqualTo(fileSize), "읽은 데이터 크기가 일치하지 않음");
+                Assert.That(totalBytesRead, Is.EqualTo(fileSize), "읽은 데이터 크기가 일치하지 않���");
             }
-            
+
             // 데이터 비교
             Assert.That(readData, Is.EqualTo(largeData), "파일 내용이 일치하지 않음");
         }
@@ -592,15 +619,48 @@ public class FileExtensionsTest
         }
     }
 
+    /// <summary>
+    /// 잘못된 버퍼 크기로 파일 쓰기를 시도할 때 예외가 발생하는지 테스트합니다.
+    /// </summary>
     [Test]
     public void WriteFileToPathAsync_WithInvalidBufferSize_ThrowsException()
     {
         // Arrange
         string filePath = Path.Combine(_testDirectoryPath, "invalid.dat");
         byte[] testData = new byte[1024];
-        
+
         // Act & Assert
         Assert.ThrowsAsync<ArgumentException>(async () =>
             await FileExtensions.WriteFileToPathAsync(filePath, testData, -2)); // AutoCalculateBufferSize(-1) 외 음수
     }
+
+    // TODO: 해당 구문도 실질적인 테스트가 불가
+    // /// <summary>
+    // /// 파일 쓰기 중 디스크 공간 부족 시나리오를 테스트합니다.
+    // /// </summary>
+    // [Test]
+    // public void WriteFileToPathAsync_InsufficientDiskSpace_ThrowsException()
+    // {
+    //     // Arrange
+    //     string filePath = Path.Combine(_testDirectoryPath, "large.dat");
+        
+    //     // 실제 디스크 공간보다 훨씬 큰 크기로 설정 (1 Petabyte)
+    //     long requestedSize = 1024L * 1024L * 1024L * 1024L * 1024L;
+        
+    //     // 0으로 채워진 큰 크기의 byte 배열 생성 (실제로는 작은 크기만 할당)
+    //     var data = new byte[8192];  // 8KB만 실제로 할당
+        
+    //     // Act & Assert
+    //     Assert.ThrowsAsync<FileWriteException>(async () =>
+    //     {
+    //         using var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write);
+    //         // 실제 크기만큼 0을 반복해서 쓰기 시도
+    //         for (long written = 0; written < requestedSize; written += data.Length)
+    //         {
+    //             await fs.WriteAsync(data, 0, data.Length);
+    //         }
+    //     });
+        
+    //     Assert.That(File.Exists(filePath), Is.False, "파일이 부분적으로 생성되었습니다.");
+    // }
 }

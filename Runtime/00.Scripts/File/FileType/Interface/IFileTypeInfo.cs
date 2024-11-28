@@ -1,4 +1,6 @@
 // ReSharper disable once CheckNamespace
+using System.Collections.Generic;
+
 namespace Creator_Hian.Unity.Common
 {
     /// <summary>
@@ -24,6 +26,6 @@ namespace Creator_Hian.Unity.Common
         /// <summary>
         /// MIME 타입
         /// </summary>
-        string MimeType { get; }
+        public IReadOnlyCollection<string> MimeTypes { get; }
     }
 } 

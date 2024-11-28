@@ -17,7 +17,7 @@ public class FileTypeResolverPerformanceTest
     [SetUp]
     public void Setup()
     {
-        _resolver = new FileTypeResolver();
+        _resolver = FileTypeResolver.Instance;
     }
 
     /// <summary>

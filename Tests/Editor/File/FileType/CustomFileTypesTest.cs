@@ -18,7 +18,7 @@ public class CustomFileTypesTest
     {
         // 커스텀 타입 등록
         CustomFileTypes.Register();
-        _resolver = new FileTypeResolver();
+        _resolver = FileTypeResolver.Instance;
     }
 
     /// <summary>

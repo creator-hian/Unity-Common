@@ -14,12 +14,12 @@ public class FileTypeResolverTest
     private IFileTypeResolver _resolver;
 
     /// <summary>
-    /// 각 테스트 전에 새로운 FileTypeResolver 인스턴스를 생성합니다.
+    /// 각 테스트 전에 FileTypeResolver 인스턴스를 가져옵니다.
     /// </summary>
     [SetUp]
     public void Setup()
     {
-        _resolver = new FileTypeResolver();
+        _resolver = FileTypeResolver.Instance;
     }
 
     /// <summary>
@@ -159,5 +159,54 @@ public class FileTypeResolverTest
         // Act & Assert
         Assert.Throws<ArgumentNullException>(() => _resolver.GetFileType(null));
         Assert.Throws<ArgumentNullException>(() => _resolver.GetFileType(string.Empty));
+    }
+
+    /// <summary>
+    /// 대소문자가 다른 MIME 타입으로 검색 시 올바르게 동작하는지 테스트합니다.
+    /// </summary>
+    [Test]
+    public void GetTypesByMimeType_CaseInsensitive_ReturnsCorrectTypes()
+    {
+        // Arrange
+        var resolver = FileTypeResolver.Instance;
+        var type = new FileTypeDefinition(".txt", "Text File", FileCategory.Common.Text, "text/plain");
+
+        // Act
+        var upperCaseTypes = resolver.GetTypesByMimeType("TEXT/PLAIN").ToList();
+        var lowerCaseTypes = resolver.GetTypesByMimeType("text/plain").ToList();
+
+        // Assert
+        Assert.That(upperCaseTypes, Is.EqualTo(lowerCaseTypes));
+    }
+
+    /// <summary>
+    /// 존재하지 않는 MIME 타입으로 검색 시 빈 컬렉션을 반환하는지 테스트합니다.
+    /// </summary>
+    [Test]
+    public void GetTypesByMimeType_NonExistentMimeType_ReturnsEmptyCollection()
+    {
+        // Arrange
+        var resolver = FileTypeResolver.Instance;
+
+        // Act
+        var types = resolver.GetTypesByMimeType("application/nonexistent").ToList();
+
+        // Assert
+        Assert.That(types, Is.Empty);
+    }
+
+    /// <summary>
+    /// null이나 빈 MIME 타입으로 검색 시 빈 컬렉션을 반환하는지 테스트합니다.
+    /// </summary>
+    [Test]
+    public void GetTypesByMimeType_NullOrEmptyMimeType_ReturnsEmptyCollection()
+    {
+        // Arrange
+        var resolver = FileTypeResolver.Instance;
+
+        // Act & Assert
+        Assert.That(resolver.GetTypesByMimeType(null).ToList(), Is.Empty);
+        Assert.That(resolver.GetTypesByMimeType(string.Empty).ToList(), Is.Empty);
+        Assert.That(resolver.GetTypesByMimeType("  ").ToList(), Is.Empty);
     }
 }

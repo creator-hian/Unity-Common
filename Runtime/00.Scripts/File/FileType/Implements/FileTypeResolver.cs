@@ -10,24 +10,43 @@ namespace Creator_Hian.Unity.Common
     /// </summary>
     public class FileTypeResolver : IFileTypeResolver
     {
+        private static FileTypeResolver _instance;
+        private static readonly object _lock = new();
+        
         private readonly Dictionary<string, FileTypeDefinition> _typesByExtension;
         private readonly Dictionary<FileCategory, HashSet<FileTypeDefinition>> _typesByCategory;
         private readonly Dictionary<string, HashSet<FileTypeDefinition>> _typesByMimeType;
 
-        public FileTypeResolver()
+        /// <summary>
+        /// FileTypeResolver의 인스턴스를 가져옵니다.
+        /// </summary>
+        public static FileTypeResolver Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    lock (_lock)
+                    {
+                        _instance ??= new FileTypeResolver();
+                    }
+                }
+                return _instance;
+            }
+        }
+
+        private FileTypeResolver()
         {
             _typesByExtension = new Dictionary<string, FileTypeDefinition>(StringComparer.OrdinalIgnoreCase);
             _typesByCategory = new Dictionary<FileCategory, HashSet<FileTypeDefinition>>();
             _typesByMimeType = new Dictionary<string, HashSet<FileTypeDefinition>>(StringComparer.OrdinalIgnoreCase);
             
-            // 초기화 보장
             FileCategory.EnsureInitialized();
             RegisterBuiltInTypes();
         }
 
         private void RegisterBuiltInTypes()
         {
-            // 모든 등록된 타입 처리
             foreach (var type in FileTypes.GetAllTypes())
             {
                 RegisterType(type);
@@ -43,15 +62,14 @@ namespace Creator_Hian.Unity.Common
                 categoryTypes = new HashSet<FileTypeDefinition>();
                 _typesByCategory[definition.Category] = categoryTypes;
             }
-
             categoryTypes.Add(definition);
 
-            if (!string.IsNullOrEmpty(definition.MimeType))
+            foreach (var mimeType in definition.MimeTypes)
             {
-                if (!_typesByMimeType.TryGetValue(definition.MimeType, out var mimeTypes))
+                if (!_typesByMimeType.TryGetValue(mimeType, out var mimeTypes))
                 {
                     mimeTypes = new HashSet<FileTypeDefinition>();
-                    _typesByMimeType[definition.MimeType] = mimeTypes;
+                    _typesByMimeType[mimeType] = mimeTypes;
                 }
                 mimeTypes.Add(definition);
             }
@@ -114,7 +132,8 @@ namespace Creator_Hian.Unity.Common
             return new FileTypeDefinition(
                 extension,
                 "Unknown File Type",
-                FileCategory.Common.Unknown);
+                FileCategory.Common.Unknown,
+                FileConstants.MimeTypes.Default);
         }
     }
 } 
