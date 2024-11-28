@@ -20,6 +20,9 @@ namespace Creator_Hian.Unity.Common
         private static readonly Dictionary<string, HashSet<FileTypeDefinition>> TypesByMimeType =
             new(StringComparer.OrdinalIgnoreCase);
 
+        private static readonly HashSet<FileTypeDefinition> EmptySet = new();
+        private static readonly FileTypeDefinition[] EmptyArray = Array.Empty<FileTypeDefinition>();
+
         /// <summary>
         /// 정적 생성자에서 기본 파일 타입들을 등록합니다.
         /// </summary>
@@ -144,7 +147,7 @@ namespace Creator_Hian.Unity.Common
         /// <param name="category">찾을 파일 카테고리</param>
         /// <returns>파일 타입 정의의 열거</returns>
         public static IEnumerable<FileTypeDefinition> GetTypesByCategory(FileCategory category) =>
-            TypesByCategory.TryGetValue(category, out var types) ? types : Enumerable.Empty<FileTypeDefinition>();
+            TypesByCategory.TryGetValue(category, out var types) ? types : EmptySet;
 
         /// <summary>
         /// 지정된 MIME 타입에 해당하는 모든 파일 타입을 반환합니다.
@@ -152,7 +155,7 @@ namespace Creator_Hian.Unity.Common
         /// <param name="mimeType">찾을 MIME 타입</param>
         /// <returns>파일 타입 정의의 열거</returns>
         public static IEnumerable<FileTypeDefinition> GetTypesByMimeType(string mimeType) =>
-            TypesByMimeType.TryGetValue(mimeType, out var types) ? types : Enumerable.Empty<FileTypeDefinition>();
+            TypesByMimeType.TryGetValue(mimeType, out var types) ? types : EmptySet;
 
 
 #if UNITY_EDITOR && UNITY_INCLUDE_TESTS

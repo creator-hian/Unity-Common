@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using System;
 using Creator_Hian.Unity.Common;
+using System.IO;
 
 /// <summary>
 /// 파일 작업 관련 예외 클래스들의 기능을 테스트합니다.
@@ -145,5 +146,51 @@ public class FileExceptionsTest
         var ex3 = new FileOperationException(message, innerException);
         Assert.That(ex3.Message, Is.EqualTo(message));
         Assert.That(ex3.InnerException, Is.EqualTo(innerException));
+    }
+
+    /// <summary>
+    /// FileTypeResolveException의 직렬화 기능을 테스트합니다.
+    /// </summary>
+    [Test]
+    public void FileTypeResolveException_Serialization_PreservesData()
+    {
+        // Arrange
+        var message = "Test error message";
+        var innerException = new Exception("Inner exception");
+        var original = new FileTypeResolveException(message, innerException);
+
+        // Act - 직렬화 및 역직렬화
+        var serializer = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+        using var stream = new MemoryStream();
+        serializer.Serialize(stream, original);
+        stream.Position = 0;
+        var deserialized = (FileTypeResolveException)serializer.Deserialize(stream);
+
+        // Assert
+        Assert.That(deserialized.Message, Is.EqualTo(original.Message));
+        Assert.That(deserialized.InnerException?.Message, Is.EqualTo(original.InnerException?.Message));
+    }
+
+    /// <summary>
+    /// FileTypeResolveException의 스택 트레이스 보존을 테스트합니다.
+    /// </summary>
+    [Test]
+    public void FileTypeResolveException_PreservesStackTrace()
+    {
+        // Arrange
+        FileTypeResolveException exception = null;
+        
+        try
+        {
+            throw new FileTypeResolveException("Test exception");
+        }
+        catch (FileTypeResolveException ex)
+        {
+            exception = ex;
+        }
+
+        // Assert
+        Assert.That(exception.StackTrace, Is.Not.Null);
+        Assert.That(exception.StackTrace, Contains.Substring(nameof(FileTypeResolveException_PreservesStackTrace)));
     }
 } 

@@ -49,8 +49,16 @@ namespace Creator_Hian.Unity.Common
             Extension = extension.ToLowerInvariant();
             Description = description ?? FileConstants.Descriptions.Unknown;
             Category = category ?? FileCategory.Common.Unknown;
-            MimeTypes = mimeTypes?.Select(m => m.ToLowerInvariant()).ToArray() 
-                ?? new[] { FileConstants.MimeTypes.Default };
+
+            var validMimeTypes = (mimeTypes ?? Array.Empty<string>())
+                .Where(m => !string.IsNullOrWhiteSpace(m))
+                .Select(m => m.ToLowerInvariant())
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToArray();
+
+            MimeTypes = validMimeTypes.Length > 0 
+                ? validMimeTypes 
+                : new[] { FileConstants.MimeTypes.Default };
         }
 
         /// <summary>

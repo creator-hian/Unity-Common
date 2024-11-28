@@ -183,4 +183,55 @@ public class FileTypeDefinitionTest
         Assert.That(type.HasMimeType(null), Is.False);
         Assert.That(type.HasMimeType(""), Is.False);
     }
+
+    /// <summary>
+    /// 빈 MIME 타입 배열이 전달될 때의 동작을 테스트합니다.
+    /// </summary>
+    [Test]
+    public void Constructor_EmptyMimeTypes_UsesDefaultMimeType()
+    {
+        // Arrange & Act
+        var definition = new FileTypeDefinition(".txt", "Text File", FileCategory.Common.Text, Array.Empty<string>());
+
+        // Assert
+        Assert.That(definition.MimeTypes.ToArray(), Has.Length.EqualTo(1));
+        Assert.That(definition.MimeTypes.First(), Is.EqualTo(FileConstants.MimeTypes.Default));
+    }
+
+    /// <summary>
+    /// null이나 빈 문자열이 포함된 MIME 타입 배열이 전달될 때의 동작을 테스트합니다.
+    /// </summary>
+    [Test]
+    public void Constructor_NullOrEmptyMimeTypeInArray_FiltersInvalidValues()
+    {
+        // Arrange
+        string[] mimeTypes = { "text/plain", null, "", "  ", "application/json" };
+
+        // Act
+        var definition = new FileTypeDefinition(".txt", "Text File", FileCategory.Common.Text, mimeTypes);
+
+        // Assert
+        var resultArray = definition.MimeTypes.ToArray();
+        Assert.That(resultArray, Has.Length.EqualTo(2));
+        CollectionAssert.Contains(resultArray, "text/plain");
+        CollectionAssert.Contains(resultArray, "application/json");
+    }
+
+    /// <summary>
+    /// 동일한 MIME 타입이 중복 전달될 때의 동작을 테스트합니다.
+    /// </summary>
+    [Test]
+    public void Constructor_DuplicateMimeTypes_RemovesDuplicates()
+    {
+        // Arrange
+        string[] mimeTypes = { "text/plain", "TEXT/PLAIN", "text/plain" };
+
+        // Act
+        var definition = new FileTypeDefinition(".txt", "Text File", FileCategory.Common.Text, mimeTypes);
+
+        // Assert
+        var resultArray = definition.MimeTypes.ToArray();
+        Assert.That(resultArray, Has.Length.EqualTo(1));
+        Assert.That(resultArray[0], Is.EqualTo("text/plain"));
+    }
 } 

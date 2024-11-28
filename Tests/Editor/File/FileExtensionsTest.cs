@@ -26,10 +26,10 @@ public class FileExtensionsTest
     {
         // 각 테스트마다 새로운 디렉토리 생성
         _testDirectoryPath = Path.Combine(
-            Application.temporaryCachePath, 
-            "FileExtensionsTest", 
+            Application.temporaryCachePath,
+            "FileExtensionsTest",
             Guid.NewGuid().ToString());
-        
+
         Directory.CreateDirectory(_testDirectoryPath);
         // 테스트용 데이터 생성
         _testData = Encoding.UTF8.GetBytes(FileTypeTestConstants.Contents.TextContent);
@@ -278,9 +278,9 @@ public class FileExtensionsTest
         // Arrange
         string filePath = Path.Combine(_testDirectoryPath, "readLocked.txt");
         FileExtensions.WriteFileToPath(filePath, _testData);
-        
+
         using var stream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-        
+
         // Act & Assert
         Assert.That(FileExtensions.IsFileLocked(filePath), Is.False);
     }
@@ -294,9 +294,9 @@ public class FileExtensionsTest
         // Arrange
         string filePath = Path.Combine(_testDirectoryPath, "writeLocked.txt");
         FileExtensions.WriteFileToPath(filePath, _testData);
-        
+
         using var stream = File.Open(filePath, FileMode.Open, FileAccess.Write, FileShare.None);
-        
+
         // Act & Assert
         Assert.That(FileExtensions.IsFileLocked(filePath), Is.True);
     }
@@ -368,7 +368,7 @@ public class FileExtensionsTest
         cts.Cancel();
 
         // Act & Assert
-        Assert.ThrowsAsync<FileOperationException>(() => 
+        Assert.ThrowsAsync<FileOperationException>(() =>
             FileExtensions.CompareFilesAsync(path1, path2, cancellationToken: cts.Token));
     }
 
@@ -392,7 +392,7 @@ public class FileExtensionsTest
         new Random().NextBytes(largeData);
 
         using var cts = new CancellationTokenSource();
-        
+
         // 즉시 취소
         cts.Cancel();
 
@@ -400,8 +400,8 @@ public class FileExtensionsTest
         {
             // Act
             await FileExtensions.WriteFileToPathAsync(
-                filePath, 
-                largeData, 
+                filePath,
+                largeData,
                 bufferSize: 1024,
                 cancellationToken: cts.Token);
 
@@ -424,7 +424,7 @@ public class FileExtensionsTest
         // Arrange
         string sourcePath = Path.Combine(_testDirectoryPath, "source.txt");
         string destPath = Path.Combine(_testDirectoryPath, "dest.txt");
-        
+
         byte[] testData = Encoding.UTF8.GetBytes("Test content");
         await File.WriteAllBytesAsync(sourcePath, testData);
 
@@ -446,7 +446,7 @@ public class FileExtensionsTest
         // Arrange
         string sourcePath = Path.Combine(_testDirectoryPath, "source.txt");
         string destPath = Path.Combine(_testDirectoryPath, "dest.txt");
-        
+
         // 더 작은 크기의 테스트 파일 생성 (1MB)
         byte[] testData = new byte[1024 * 1024];
         new Random().NextBytes(testData);
@@ -461,7 +461,7 @@ public class FileExtensionsTest
         {
             // Act
             await FileExtensions.CopyFileAsync(
-                sourcePath, 
+                sourcePath,
                 destPath,
                 cancellationToken: cts.Token);
 
@@ -484,10 +484,10 @@ public class FileExtensionsTest
         // Arrange
         string sourcePath = Path.Combine(_testDirectoryPath, "source.txt");
         string destPath = Path.Combine(_testDirectoryPath, "dest.txt");
-        
+
         byte[] initialData = Encoding.UTF8.GetBytes("Initial content");
         byte[] newData = Encoding.UTF8.GetBytes("New content");
-        
+
         await File.WriteAllBytesAsync(sourcePath, newData);
         await File.WriteAllBytesAsync(destPath, initialData);
 
@@ -565,7 +565,7 @@ public class FileExtensionsTest
         new Random().NextBytes(largeData);
 
         var memoryBefore = GC.GetTotalMemory(true);
-        
+
         try
         {
             // Act
@@ -578,8 +578,8 @@ public class FileExtensionsTest
             // 메모리 사용량 확인 (급격한 증가가 없어야 함)
             var memoryAfter = GC.GetTotalMemory(false);
             var memoryDiff = memoryAfter - memoryBefore;
-            
-            Assert.That(memoryDiff, Is.LessThan(fileSize / 2), 
+
+            Assert.That(memoryDiff, Is.LessThan(fileSize / 2),
                 "메모리 사용량이 너무 높습니다");
 
             // 파일 내용 검증
@@ -596,9 +596,9 @@ public class FileExtensionsTest
                     Buffer.BlockCopy(buffer, 0, readData, totalBytesRead, bytesRead);
                     totalBytesRead += bytesRead;
                 }
-                Assert.That(totalBytesRead, Is.EqualTo(fileSize), "읽은 데이터 크기가 일치하지 않음");
+                Assert.That(totalBytesRead, Is.EqualTo(fileSize), "읽은 데이터 크기가 일치하지 않���");
             }
-            
+
             // 데이터 비교
             Assert.That(readData, Is.EqualTo(largeData), "파일 내용이 일치하지 않음");
         }
@@ -628,9 +628,39 @@ public class FileExtensionsTest
         // Arrange
         string filePath = Path.Combine(_testDirectoryPath, "invalid.dat");
         byte[] testData = new byte[1024];
-        
+
         // Act & Assert
         Assert.ThrowsAsync<ArgumentException>(async () =>
             await FileExtensions.WriteFileToPathAsync(filePath, testData, -2)); // AutoCalculateBufferSize(-1) 외 음수
     }
+
+    // TODO: 해당 구문도 실질적인 테스트가 불가
+    // /// <summary>
+    // /// 파일 쓰기 중 디스크 공간 부족 시나리오를 테스트합니다.
+    // /// </summary>
+    // [Test]
+    // public void WriteFileToPathAsync_InsufficientDiskSpace_ThrowsException()
+    // {
+    //     // Arrange
+    //     string filePath = Path.Combine(_testDirectoryPath, "large.dat");
+        
+    //     // 실제 디스크 공간보다 훨씬 큰 크기로 설정 (1 Petabyte)
+    //     long requestedSize = 1024L * 1024L * 1024L * 1024L * 1024L;
+        
+    //     // 0으로 채워진 큰 크기의 byte 배열 생성 (실제로는 작은 크기만 할당)
+    //     var data = new byte[8192];  // 8KB만 실제로 할당
+        
+    //     // Act & Assert
+    //     Assert.ThrowsAsync<FileWriteException>(async () =>
+    //     {
+    //         using var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write);
+    //         // 실제 크기만큼 0을 반복해서 쓰기 시도
+    //         for (long written = 0; written < requestedSize; written += data.Length)
+    //         {
+    //             await fs.WriteAsync(data, 0, data.Length);
+    //         }
+    //     });
+        
+    //     Assert.That(File.Exists(filePath), Is.False, "파일이 부분적으로 생성되었습니다.");
+    // }
 }
