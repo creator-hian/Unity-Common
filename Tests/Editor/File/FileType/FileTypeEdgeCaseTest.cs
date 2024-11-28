@@ -13,7 +13,7 @@ public class FileTypeEdgeCaseTest
     [SetUp]
     public void Setup()
     {
-        _resolver = new FileTypeResolver();
+        _resolver = FileTypeResolver.Instance;
     }
 
     /// <summary>

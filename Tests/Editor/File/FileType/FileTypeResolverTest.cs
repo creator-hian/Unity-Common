@@ -14,12 +14,12 @@ public class FileTypeResolverTest
     private IFileTypeResolver _resolver;
 
     /// <summary>
-    /// 각 테스트 전에 새로운 FileTypeResolver 인스턴스를 생성합니다.
+    /// 각 테스트 전에 FileTypeResolver 인스턴스를 가져옵니다.
     /// </summary>
     [SetUp]
     public void Setup()
     {
-        _resolver = new FileTypeResolver();
+        _resolver = FileTypeResolver.Instance;
     }
 
     /// <summary>
@@ -168,7 +168,7 @@ public class FileTypeResolverTest
     public void GetTypesByMimeType_CaseInsensitive_ReturnsCorrectTypes()
     {
         // Arrange
-        var resolver = new FileTypeResolver();
+        var resolver = FileTypeResolver.Instance;
         var type = new FileTypeDefinition(".txt", "Text File", FileCategory.Common.Text, "text/plain");
 
         // Act
@@ -186,7 +186,7 @@ public class FileTypeResolverTest
     public void GetTypesByMimeType_NonExistentMimeType_ReturnsEmptyCollection()
     {
         // Arrange
-        var resolver = new FileTypeResolver();
+        var resolver = FileTypeResolver.Instance;
 
         // Act
         var types = resolver.GetTypesByMimeType("application/nonexistent").ToList();
@@ -202,7 +202,7 @@ public class FileTypeResolverTest
     public void GetTypesByMimeType_NullOrEmptyMimeType_ReturnsEmptyCollection()
     {
         // Arrange
-        var resolver = new FileTypeResolver();
+        var resolver = FileTypeResolver.Instance;
 
         // Act & Assert
         Assert.That(resolver.GetTypesByMimeType(null).ToList(), Is.Empty);

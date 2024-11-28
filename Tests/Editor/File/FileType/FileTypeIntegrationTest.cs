@@ -19,7 +19,7 @@ public class FileTypeIntegrationTest
     [OneTimeSetUp]
     public void Setup()
     {
-        _resolver = new FileTypeResolver();
+        _resolver = FileTypeResolver.Instance;
         _testDirectory = Path.Combine(Application.temporaryCachePath, "FileTypeTests");
         Directory.CreateDirectory(_testDirectory);
     }
