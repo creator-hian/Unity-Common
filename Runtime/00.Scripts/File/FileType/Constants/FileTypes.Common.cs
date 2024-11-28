@@ -17,61 +17,63 @@ namespace Creator_Hian.Unity.Common
             /// 텍스트 파일(.txt) 타입 정의
             /// </summary>
             public static readonly FileTypeDefinition Text =
-                new(".txt", "Text File", FileCategory.Common.Text, "text/plain");
+                new(".txt", "Text File", FileCategory.Common.Text, FileConstants.MimeTypes.Text.Plain);
 
             /// <summary>
             /// JSON 파일(.json) 타입 정의
             /// </summary>
             public static readonly FileTypeDefinition Json =
-                new(".json", "JSON File", FileCategory.Common.Data, "application/json");
+                new(".json", "JSON File", FileCategory.Common.Data, FileConstants.MimeTypes.Application.Json);
 
             /// <summary>
             /// XML 파일(.xml) 타입 정의
             /// </summary>
             public static readonly FileTypeDefinition Xml =
-                new(".xml", "XML File", FileCategory.Common.Data, "application/xml");
+                new(".xml", "XML File", FileCategory.Common.Data, 
+                    FileConstants.MimeTypes.Application.Xml,  // 주 MIME 타입
+                    FileConstants.MimeTypes.Text.Xml);        // 대체 MIME 타입
 
             /// <summary>
             /// CSV 파일(.csv) 타입 정의
             /// </summary>
             public static readonly FileTypeDefinition Csv =
-                new(".csv", "CSV File", FileCategory.Common.Data, "text/csv");
+                new(".csv", "CSV File", FileCategory.Common.Data, FileConstants.MimeTypes.Text.Csv);
 
             /// <summary>
             /// HTML 파일(.html) 타입 정의
             /// </summary>
             public static readonly FileTypeDefinition Html =
-                new(".html", "HTML File", FileCategory.Common.Text, "text/html");
+                new(".html", "HTML File", FileCategory.Common.Text, FileConstants.MimeTypes.Text.Html);
 
             /// <summary>
             /// JPEG 이미지(.jpg) 타입 정의
             /// </summary>
             public static readonly FileTypeDefinition Jpeg =
-                new(".jpg", "JPEG Image", FileCategory.Common.Image, "image/jpeg");
+                new(".jpg", "JPEG Image", FileCategory.Common.Image, FileConstants.MimeTypes.Image.Jpeg);
 
             /// <summary>
             /// PNG 이미지(.png) 타입 정의
             /// </summary>
             public static readonly FileTypeDefinition Png =
-                new(".png", "PNG Image", FileCategory.Common.Image, "image/png");
+                new(".png", "PNG Image", FileCategory.Common.Image, FileConstants.MimeTypes.Image.Png);
 
             /// <summary>
             /// GIF 이미지(.gif) 타입 정의
             /// </summary>
             public static readonly FileTypeDefinition Gif =
-                new(".gif", "GIF Image", FileCategory.Common.Image, "image/gif");
+                new(".gif", "GIF Image", FileCategory.Common.Image, FileConstants.MimeTypes.Image.Gif);
 
             /// <summary>
             /// PDF 문서(.pdf) 타입 정의
             /// </summary>
             public static readonly FileTypeDefinition Pdf =
-                new(".pdf", "PDF Document", FileCategory.Common.Document, "application/pdf");
+                new(".pdf", "PDF Document", FileCategory.Common.Document, FileConstants.MimeTypes.Application.Pdf);
 
             /// <summary>
             /// ZIP 아카이브(.zip) 타입 정의
             /// </summary>
             public static readonly FileTypeDefinition Zip =
-                new(".zip", "ZIP Archive", FileCategory.Common.Archive, "application/zip");
+                new(".zip", "ZIP Archive", FileCategory.Common.Archive, FileConstants.MimeTypes.Application.Zip);
 
             /// <summary>
             /// 정의된 모든 일반 파일 타입을 가져옵니다.

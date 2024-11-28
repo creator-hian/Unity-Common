@@ -16,49 +16,49 @@ namespace Creator_Hian.Unity.Common
             /// Unity 씬(.unity) 파일 타입 정의
             /// </summary>
             public static readonly FileTypeDefinition Scene = 
-                new(".unity", "Unity Scene", FileCategory.Unity.Scene, "application/x-unity-scene");
+                new(".unity", "Unity Scene", FileCategory.Unity.Scene, FileConstants.MimeTypes.Unity.Scene);
 
             /// <summary>
             /// Unity 프리팹(.prefab) 파일 타입 정의
             /// </summary>
             public static readonly FileTypeDefinition Prefab = 
-                new(".prefab", "Unity Prefab", FileCategory.Unity.Prefab, "application/x-unity-prefab");
+                new(".prefab", "Unity Prefab", FileCategory.Unity.Prefab, FileConstants.MimeTypes.Unity.Prefab);
 
             /// <summary>
             /// Unity 에셋(.asset) 파일 타입 정의
             /// </summary>
             public static readonly FileTypeDefinition Asset = 
-                new(".asset", "Unity Asset", FileCategory.Unity.Asset, "application/x-unity-asset");
+                new(".asset", "Unity Asset", FileCategory.Unity.Asset, FileConstants.MimeTypes.Unity.Asset);
 
             /// <summary>
             /// Unity 메타(.meta) 파일 타입 정의
             /// </summary>
             public static readonly FileTypeDefinition Meta = 
-                new(".meta", "Unity Meta", FileCategory.Unity.Asset, "application/x-unity-meta");
+                new(".meta", "Unity Meta", FileCategory.Unity.Asset, FileConstants.MimeTypes.Unity.Meta);
 
             /// <summary>
             /// Unity 머티리얼(.mat) 파일 타입 정의
             /// </summary>
             public static readonly FileTypeDefinition Material = 
-                new(".mat", "Unity Material", FileCategory.Unity.Resource, "application/x-unity-material");
+                new(".mat", "Unity Material", FileCategory.Unity.Resource, FileConstants.MimeTypes.Unity.Material);
 
             /// <summary>
             /// Unity 셰이더(.shader) 파일 타입 정의
             /// </summary>
             public static readonly FileTypeDefinition Shader = 
-                new(".shader", "Unity Shader", FileCategory.Unity.Script, "application/x-unity-shader");
+                new(".shader", "Unity Shader", FileCategory.Unity.Script, FileConstants.MimeTypes.Unity.Shader);
 
             /// <summary>
             /// Unity 애니메이션(.anim) 파일 타입 정의
             /// </summary>
             public static readonly FileTypeDefinition Animation = 
-                new(".anim", "Unity Animation", FileCategory.Unity.Animation, "application/x-unity-animation");
+                new(".anim", "Unity Animation", FileCategory.Unity.Animation, FileConstants.MimeTypes.Unity.Animation);
 
             /// <summary>
             /// Unity 애니메이터 컨트롤러(.controller) 파일 타입 정의
             /// </summary>
             public static readonly FileTypeDefinition AnimatorController = 
-                new(".controller", "Unity Animator Controller", FileCategory.Unity.Animation, "application/x-unity-animator-controller");
+                new(".controller", "Unity Animator Controller", FileCategory.Unity.Animation, FileConstants.MimeTypes.Unity.AnimatorController);
             // ReSharper restore MemberCanBePrivate.Global
 
             /// <summary>

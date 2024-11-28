@@ -18,6 +18,9 @@ public class FileExtensionsTest
     private string _testDirectoryPath;
     private byte[] _testData;
 
+    /// <summary>
+    /// 각 테스트 전에 임시 디렉토리를 생성하고 테스트 데이터를 준비합니다.
+    /// </summary>
     [SetUp]
     public void SetUp()
     {
@@ -32,6 +35,9 @@ public class FileExtensionsTest
         _testData = Encoding.UTF8.GetBytes(FileTypeTestConstants.Contents.TextContent);
     }
 
+    /// <summary>
+    /// 각 테스트 후에 임시 디렉토리를 정리합니다.
+    /// </summary>
     [TearDown]
     // ReSharper disable once CognitiveComplexity
     public void TearDown()
@@ -68,8 +74,12 @@ public class FileExtensionsTest
 
     /// <summary>
     /// 유효한 경로에 파일을 동기적으로 쓰는 기본 동작을 테스트합니다.
-    /// 파일이 생성되고 데이터가 정확히 쓰여졌는지 확인합니다.
     /// </summary>
+    /// <remarks>
+    /// 검증 항목:
+    /// 1. 파일이 생성되는지 확인
+    /// 2. 데이터가 정확히 쓰여졌는지 확인
+    /// </remarks>
     [Test]
     public void WriteFileToPath_ValidPath_CreatesFile()
     {
@@ -87,8 +97,12 @@ public class FileExtensionsTest
 
     /// <summary>
     /// 유효한 경로에 파일을 비동기적으로 쓰는 동작을 테스트합니다.
-    /// 비동기 작업이 완료된 후 파일이 생성되고 데이터가 정확히 쓰여졌는지 확인합니다.
     /// </summary>
+    /// <remarks>
+    /// 검증 항목:
+    /// 1. 비동기 작업이 완료된 후 파일 존재 확인
+    /// 2. 쓰여진 데이터의 정확성 검증
+    /// </remarks>
     [Test]
     public async Task WriteFileToPathAsync_ValidPath_CreatesFile()
     {
@@ -124,7 +138,7 @@ public class FileExtensionsTest
     /// 잘못된 경로로 파일 쓰기를 시도할 때의 예외 처리를 테스트합니다.
     /// </summary>
     /// <remarks>
-    /// 검증하는 예외 상황:
+    /// 검증 항목:
     /// 1. 너무 긴 경로명(300자)에 대한 FilePathException 발생
     /// 2. 잘못된 문자('*')가 포함된 경로에 대한 처리
     /// </remarks>
@@ -175,8 +189,12 @@ public class FileExtensionsTest
 
     /// <summary>
     /// 중첩된 디렉토리 구조에서 파일 쓰기가 정상 동작하는지 테스트합니다.
-    /// 존재하지 않는 중첩 디렉토리가 자동으로 생성되고 파일이 정상적으로 생성되는지 확인합니다.
     /// </summary>
+    /// <remarks>
+    /// 검증 항목:
+    /// 1. 존재하지 않는 중첩 디렉토리 자동 생성
+    /// 2. 파일이 정상적으로 생성되는지 확인
+    /// </remarks>
     [Test]
     public void WriteFileToPath_CreateNestedDirectories_Success()
     {
@@ -212,8 +230,12 @@ public class FileExtensionsTest
 
     /// <summary>
     /// 대용량 파일(1MB)의 비동기식 쓰기가 정상 동작하는지 테스트합니다.
-    /// 사용자 정의 버퍼 크기(8192)로 쓰기 작업이 수행되는지 확인합니다.
     /// </summary>
+    /// <remarks>
+    /// 검증 항목:
+    /// 1. 사용자 정의 버퍼 크기(8192)로 쓰기 작업 수행
+    /// 2. 파일 데이터의 정확성 검증
+    /// </remarks>
     [Test]
     public async Task WriteFileToPathAsync_LargeFile_Success()
     {
@@ -247,7 +269,6 @@ public class FileExtensionsTest
         }
     }
 
-
     /// <summary>
     /// 읽기 전용으로 파일이 열려있을 때 잠금 상태가 false로 반환되는지 테스트합니다.
     /// </summary>
@@ -280,7 +301,6 @@ public class FileExtensionsTest
         Assert.That(FileExtensions.IsFileLocked(filePath), Is.True);
     }
 
-
     /// <summary>
     /// 동일한 내용을 가진 두 파일을 비교할 때 true를 반환하는지 테스트합니다.
     /// </summary>
@@ -308,11 +328,6 @@ public class FileExtensionsTest
     /// <summary>
     /// 서로 다른 내용을 가진 두 파일을 비교할 때 false를 반환하는지 테스트합니다.
     /// </summary>
-    /// <remarks>
-    /// 검증 항목:
-    /// 1. 서로 다른 내용의 파일 생성
-    /// 2. CompareFilesAsync가 false를 반환하는지 확인
-    /// </remarks>
     [Test]
     public async Task CompareFilesAsync_WithDifferentFiles_ReturnsFalse()
     {
@@ -485,6 +500,9 @@ public class FileExtensionsTest
         Assert.That(result, Is.EqualTo(newData));
     }
 
+    /// <summary>
+    /// 다양한 버퍼 크기로 파일 쓰기가 정상 동작하는지 테스트합니다.
+    /// </summary>
     [Test]
     public async Task WriteFileToPathAsync_WithDifferentBufferSizes()
     {
@@ -528,6 +546,15 @@ public class FileExtensionsTest
         }
     }
 
+    /// <summary>
+    /// 매우 큰 파일의 비동기 쓰기가 정상 동작하는지 테스트합니다.
+    /// </summary>
+    /// <remarks>
+    /// 검증 항목:
+    /// 1. LargeFileThreshold보다 큰 파일 쓰기
+    /// 2. 메모리 사용량 모니터링
+    /// 3. 파일 데이터의 정확성 검증
+    /// </remarks>
     [Test]
     public async Task WriteFileToPathAsync_WithVeryLargeFile()
     {
@@ -592,6 +619,9 @@ public class FileExtensionsTest
         }
     }
 
+    /// <summary>
+    /// 잘못된 버퍼 크기로 파일 쓰기를 시도할 때 예외가 발생하는지 테스트합니다.
+    /// </summary>
     [Test]
     public void WriteFileToPathAsync_WithInvalidBufferSize_ThrowsException()
     {
