@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - release  # 패키지를 퍼블리시할 브랜치명
-    tags:
-      - 'v*.*.*' # v*.*.* 형식의 태그를 가진 커밋만 퍼블리시
 
 jobs:
   publish:
