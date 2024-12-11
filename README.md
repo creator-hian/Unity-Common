@@ -2,6 +2,11 @@
 
 Unity 프로젝트에서 자주 사용되는 기본적인 기능들을 제공하는 패키지입니다.
 
+## 요구사항
+
+- Unity 2021.3 이상
+- .NET Standard 2.1
+
 ## 기능 목록
 
 ### 1. [파일 시스템](Runtime/00.Scripts/File/README.md)
@@ -73,22 +78,11 @@ https://github.com/creator-hian/Unity-Common.git
 
 - [Unity 공식 매뉴얼 - Git URL을 통한 패키지 설치](https://docs.unity3d.com/kr/2023.2/Manual/upm-ui-giturl.html)
 
-## 요구사항
-
-- Unity 2021.3 이상
-- .NET Standard 2.1
-
 ## 문서
 
 각 기능에 대한 자세한 설명은 해당 기능의 README를 참조하세요:
 
 - [파일 시스템 문서](Runtime/00.Scripts/File/README.md)
-
-## 버전 정보
-
-- 현재 버전: 0.0.1
-- Unity 최소 버전: 2021.3
-- 최근 업데이트: 2024-11-30
 
 ## 원작성자
 
