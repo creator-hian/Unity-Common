@@ -12,6 +12,9 @@ Unity 프로젝트에서 자주 사용되는 기본적인 기능들을 제공하
 ### 1. [파일 시스템](Runtime/00.Scripts/File/README.md)
 
 - 파일 작업 (쓰기, 복사, 비교)
+- 동기(Sync) 작업
+- 비동기(Async) 작업
+- Unity 2023.2+ Awaitable 작업 지원
 - 파일 타입 관리
 - MIME 타입 지원
 - 파일 카테고리 분류
