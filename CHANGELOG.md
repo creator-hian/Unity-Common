@@ -8,11 +8,36 @@
   - **Major**: 호환성이 깨지는 변경
   - **Minor**: 하위 호환성 있는 기능 추가
   - **Patch**: 하위 호환성 있는 버그 수정
+- **최신 버전이 상단에, 이전 버전이 하단에 기록됩니다.**
 
 ### Unity 버전 호환성
 
 - Unity 2021.3 이상 지원
 - 각 Unity LTS 버전에 대한 호환성 보장
+
+## [0.2.0] - 2024-12-06
+
+### 추가
+
+- Unity 2023.2+ 버전을 위한 Awaitable 파일 작업 지원
+  - WriteFileToPathAwaitable
+  - CopyFileAwaitable
+  - CompareFilesAwaitable
+- 파일 작업의 세 가지 방식 지원
+  - 동기(Sync)
+  - 비동기(Async)
+  - Awaitable (Unity 2023.2+)
+
+### 변경
+
+- 파일 작업 테스트 구조 개선
+  - Sync, Async, Awaitable 테스트 분리
+  - 테스트 안정성 향상
+
+### 호환성
+
+- Awaitable 기능은 Unity 2023.2 이상 버전에서만 사용 가능
+- 기존 동기/비동기 기능은 Unity 2021.3 이상에서 계속 지원
 
 ## [0.1.1] - 2024-12-05
 
