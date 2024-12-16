@@ -11,16 +11,53 @@
 - **FileTypeResolveException**: 생성자 테스트 (기본, 메시지, 내부 예외), 직렬화/역직렬화 테스트, 스택 트레이스 보존 테스트
 - **FileOperationException**: 생성자 테스트 (기본, 메시지, 내부 예외)
 
-### FileExtensionsTest.cs
+### FileExtensionsSync
 
-- **파일 쓰기**: 유효/잘못된 경로, null 경로, 취소, 대용량 파일, 다양한 버퍼 크기 테스트
-- **파일 잠금**: 읽기/쓰기 잠금 상태 테스트
-- **파일 복사**: 취소, 덮어쓰기 테스트
-- **파일 비교**: 동일/다른 파일, 취소 테스트
-- **메모리 사용량**: 대용량 파일 쓰기 시 메모리 사용량 테스트
-- **예외 처리**: 잘못된 버퍼 크기 테스트
+#### FileExtensionsWriteTest.cs
 
-### FileType 관련 ��스트
+- **WriteFileToPath**: 유효/잘못된 경로, null 경로, 중첩 디렉토리, 대용량 파일 테스트
+
+#### FileExtensionsLockTest.cs
+
+- **IsFileLocked**: 읽기/쓰기 잠금 상태 테스트
+
+#### FileExtensionsCompareTest.cs
+
+- **CompareFiles**: 동일/다른 파일, 내용 비교 옵션 테스트
+
+#### FileExtensionsCopyTest.cs
+
+- **CopyFile**: 기본 복사, 덮어쓰기, 존재하지 않는 원본, 대상 파일 존재 테스트
+
+### FileExtensionsAsync
+
+#### FileExtensionsTaskWriteTest.cs
+
+- **WriteFileToPathAsync**: 유효/잘못된 경로, null 경로, 취소, 중첩 디렉토리, 대용량 파일 테스트
+
+#### FileExtensionsTaskCompareTest.cs
+
+- **CompareFilesAsync**: 동일/다른 파일, 취소 테스트
+
+#### FileExtensionsTaskCopyTest.cs
+
+- **CopyFileAsync**: 기본 복사, 덮어쓰기, 취소 테스트
+
+### FileExtensionsAwaitable (Unity 2023.2+)
+
+#### FileExtensionsAwaitableWriteTest.cs
+
+- **WriteFileToPathAwaitable**: 유효 경로 테스트
+
+#### FileExtensionsAwaitableCompareTest.cs
+
+- **CompareFilesAwaitable**: 동일 내용 파일 비교 테스트
+
+#### FileExtensionsAwaitableCopyTest.cs
+
+- **CopyFileAwaitable**: 기본 복사 동작 테스트
+
+### FileType 관련 테스트
 
 #### CustomFileTypesTest.cs
 
