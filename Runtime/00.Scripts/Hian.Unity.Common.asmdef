@@ -1,6 +1,6 @@
 {
-    "name": "Creator-Hian.Unity.Common",
-    "rootNamespace": "",
+    "name": "Hian.Unity.Common",
+    "rootNamespace": "Hian.Unity",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
