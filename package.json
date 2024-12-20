@@ -1,7 +1,7 @@
 {
   "name": "com.creator-hian.unity.common",
   "version": "0.3.0",
-  "displayName": "Hian Unity Common package",
+  "displayName": "Hian Unity Common",
   "unity": "2021.3",
   "keywords": [
     "Hian"
@@ -11,7 +11,7 @@
     "email": "shahian12@gmail.com",
     "url": "https://github.com/creator-hian"
   },
-  "description": "Unity 활용을 위한 가장 기본적인 Package입니다.",
+  "description": "Unity \ud65c\uc6a9\uc744 \uc704\ud55c \uac00\uc7a5 \uae30\ubcf8\uc801\uc778 Package\uc785\ub2c8\ub2e4.",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/@creator-hian"
   },
