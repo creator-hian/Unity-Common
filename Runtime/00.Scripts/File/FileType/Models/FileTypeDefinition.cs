@@ -41,38 +41,48 @@ namespace Creator_Hian.Unity.Common
             string extension,
             string description,
             FileCategory category,
-            params string[] mimeTypes)
+            params string[] mimeTypes
+        )
         {
             if (string.IsNullOrEmpty(extension))
+            {
                 throw new ArgumentNullException(nameof(extension));
+            }
 
             Extension = extension.ToLowerInvariant();
             Description = description ?? FileConstants.Descriptions.Unknown;
             Category = category ?? FileCategory.Common.Unknown;
 
-            var validMimeTypes = (mimeTypes ?? Array.Empty<string>())
-                .Where(m => !string.IsNullOrWhiteSpace(m))
-                .Select(m => m.ToLowerInvariant())
+            string[] validMimeTypes = (mimeTypes ?? Array.Empty<string>())
+                .Where(static m => !string.IsNullOrWhiteSpace(m))
+                .Select(static m => m.ToLowerInvariant())
                 .Distinct(StringComparer.OrdinalIgnoreCase)
                 .ToArray();
 
-            MimeTypes = validMimeTypes.Length > 0 
-                ? validMimeTypes 
-                : new[] { FileConstants.MimeTypes.Default };
+            MimeTypes =
+                validMimeTypes.Length > 0
+                    ? validMimeTypes
+                    : new[] { FileConstants.MimeTypes.Default };
         }
 
         /// <summary>
         /// 현재 파일 타입 정의의 문자열 표현을 반환합니다.
         /// </summary>
         /// <returns>파일 타입의 설명</returns>
-        public override string ToString() => Description;
+        public override string ToString()
+        {
+            return Description;
+        }
 
         /// <summary>
         /// 현재 파일 타입 정의가 지정된 카테고리에 속하는지 확인합니다.
         /// </summary>
         /// <param name="category">확인할 카테고리</param>
         /// <returns>지정된 카테고리에 속하면 true, 그렇지 않으면 false</returns>
-        public bool IsCategory(FileCategory category) => Category == category;
+        public bool IsCategory(FileCategory category)
+        {
+            return Category == category;
+        }
 
         /// <summary>
         /// 지정된 MIME 타입이 파일 타입 정의에 포함되는지 확인합니다.
@@ -81,39 +91,61 @@ namespace Creator_Hian.Unity.Common
         /// <returns>지정된 MIME 타입이 포함되면 true, 그렇지 않으면 false</returns>
         public bool HasMimeType(string mimeType)
         {
-            if (string.IsNullOrEmpty(mimeType)) return false;
+            if (string.IsNullOrEmpty(mimeType))
+            {
+                return false;
+            }
+
             mimeType = mimeType.ToLowerInvariant();
             return MimeTypes.Any(m => m.Equals(mimeType, StringComparison.OrdinalIgnoreCase));
         }
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((FileTypeDefinition)obj);
+            if (obj is null)
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            return obj.GetType() == GetType() && Equals((FileTypeDefinition)obj);
         }
 
         public bool Equals(FileTypeDefinition other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return string.Equals(Extension, other.Extension, StringComparison.OrdinalIgnoreCase) &&
-                   string.Equals(Description, other.Description) &&
-                   Equals(Category, other.Category) &&
-                   MimeTypes.Count == other.MimeTypes.Count &&
-                   MimeTypes.All(m => other.MimeTypes.Contains(m, StringComparer.OrdinalIgnoreCase));
+            if (other is null)
+            {
+                return false;
+            }
+
+            return ReferenceEquals(this, other)
+                || string.Equals(Extension, other.Extension, StringComparison.OrdinalIgnoreCase)
+                    && string.Equals(Description, other.Description)
+                    && Equals(Category, other.Category)
+                    && MimeTypes.Count == other.MimeTypes.Count
+                    && MimeTypes.All(m =>
+                        other.MimeTypes.Contains(m, StringComparer.OrdinalIgnoreCase)
+                    );
         }
 
         public override int GetHashCode()
         {
             unchecked
             {
-                var hashCode = Extension?.ToLowerInvariant().GetHashCode() ?? 0;
+                int hashCode = Extension?.ToLowerInvariant().GetHashCode() ?? 0;
                 hashCode = (hashCode * 397) ^ (Description?.GetHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ (Category?.GetHashCode() ?? 0);
-                hashCode = (hashCode * 397) ^ (MimeTypes?.OrderBy(m => m.ToLowerInvariant())
-                    .Aggregate(0, (h, m) => h ^ m.GetHashCode()) ?? 0);
+                hashCode =
+                    (hashCode * 397)
+                    ^ (
+                        MimeTypes
+                            ?.OrderBy(static m => m.ToLowerInvariant())
+                            .Aggregate(0, static (h, m) => h ^ m.GetHashCode()) ?? 0
+                    );
                 return hashCode;
             }
         }
@@ -128,4 +160,4 @@ namespace Creator_Hian.Unity.Common
             return !Equals(left, right);
         }
     }
-} 
+}

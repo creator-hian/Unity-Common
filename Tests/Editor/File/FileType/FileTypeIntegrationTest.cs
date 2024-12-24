@@ -1,8 +1,8 @@
 using System.IO;
-using NUnit.Framework;
-using UnityEngine;
 using Creator_Hian.Unity.Common;
 using Creator_Hian.Unity.Common.Tests;
+using NUnit.Framework;
+using UnityEngine;
 
 /// <summary>
 /// FileTypeResolver의 실제 파일 시스템과의 통합 동작을 테스트합니다.
@@ -23,7 +23,7 @@ namespace FileExtensions.FileType
         {
             _resolver = FileTypeResolver.Instance;
             _testDirectory = Path.Combine(Application.temporaryCachePath, "FileTypeTests");
-            Directory.CreateDirectory(_testDirectory);
+            _ = Directory.CreateDirectory(_testDirectory);
         }
 
         /// <summary>
@@ -46,31 +46,37 @@ namespace FileExtensions.FileType
         public void FileOperations_WithTypeChecking_Success()
         {
             // Arrange
-            var testFiles = new[]
+            (string, string, FileCategory)[] testFiles = new[]
             {
-                ($"test{FileTypeTestConstants.Extensions.Text}", 
-                    FileTypeTestConstants.Contents.TextContent, 
-                    FileCategory.Common.Text),
-                ($"data{FileTypeTestConstants.Extensions.Json}", 
-                    FileTypeTestConstants.Contents.JsonContent, 
-                    FileCategory.Common.Data)
+                (
+                    $"test{FileTypeTestConstants.Extensions.Text}",
+                    FileTypeTestConstants.Contents.TextContent,
+                    FileCategory.Common.Text
+                ),
+                (
+                    $"data{FileTypeTestConstants.Extensions.Json}",
+                    FileTypeTestConstants.Contents.JsonContent,
+                    FileCategory.Common.Data
+                ),
             };
 
-            foreach (var (fileName, content, expectedCategory) in testFiles)
+            foreach ((string fileName, string content, FileCategory expectedCategory) in testFiles)
             {
                 string filePath = Path.Combine(_testDirectory, fileName);
-                
+
                 // Act
                 File.WriteAllText(filePath, content);
-                var fileType = _resolver.GetFileType(filePath);
+                IFileTypeInfo fileType = _resolver.GetFileType(filePath);
                 bool isCorrectType = _resolver.IsTypeOf(filePath, expectedCategory);
 
                 // Assert
                 Assert.That(File.Exists(filePath), "파일이 생성되지 않았습니다");
-                Assert.That(fileType.Category, Is.EqualTo(expectedCategory), 
-                    "파일 카테고리가 일치하지 않습니다");
-                Assert.That(isCorrectType, Is.True, 
-                    "IsTypeOf 검사 결과가 올바르지 않습니다");
+                Assert.That(
+                    fileType.Category,
+                    Is.EqualTo(expectedCategory),
+                    "파일 카테고리가 일치하지 않습니다"
+                );
+                Assert.That(isCorrectType, Is.True, "IsTypeOf 검사 결과가 올바르지 않습니다");
             }
         }
 
@@ -82,21 +88,26 @@ namespace FileExtensions.FileType
         public void FileTypeResolution_WithMixedPaths_HandlesCorrectly()
         {
             // Arrange
-            var testPaths = new[]
+            string[] testPaths = new[]
             {
-                Path.Combine(_testDirectory, FileTypeTestConstants.Paths.NestedPath + FileTypeTestConstants.Extensions.Scene),
+                Path.Combine(
+                    _testDirectory,
+                    FileTypeTestConstants.Paths.NestedPath + FileTypeTestConstants.Extensions.Scene
+                ),
                 Path.Combine(_testDirectory, "test" + FileTypeTestConstants.Extensions.Prefab),
-                FileTypeTestConstants.Paths.RelativePath + FileTypeTestConstants.Extensions.Material,
-                FileTypeTestConstants.Paths.AbsolutePath + FileTypeTestConstants.Extensions.Animation
+                FileTypeTestConstants.Paths.RelativePath
+                    + FileTypeTestConstants.Extensions.Material,
+                FileTypeTestConstants.Paths.AbsolutePath
+                    + FileTypeTestConstants.Extensions.Animation,
             };
 
             // Act & Assert
-            foreach (var path in testPaths)
+            foreach (string path in testPaths)
             {
-                var fileType = _resolver.GetFileType(path);
+                IFileTypeInfo fileType = _resolver.GetFileType(path);
                 Assert.That(fileType, Is.Not.Null);
                 Assert.That(fileType.Extension, Is.EqualTo(Path.GetExtension(path)));
             }
         }
     }
-} 
+}

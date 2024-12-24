@@ -1,7 +1,6 @@
 #if UNITY_2023_2_OR_NEWER
 using System;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using UnityEngine;
@@ -21,7 +20,10 @@ namespace FileExtensions.Awaitable
         [SetUp]
         public virtual async Task Setup()
         {
-            _testDirectory = Path.Combine(Application.temporaryCachePath, "FileExtensionsAwaitableTest");
+            _testDirectory = Path.Combine(
+                Application.temporaryCachePath,
+                "FileExtensionsAwaitableTest"
+            );
             _testFile1 = Path.Combine(_testDirectory, "test1.txt");
             _testFile2 = Path.Combine(_testDirectory, "test2.txt");
             _testData = new byte[] { 1, 2, 3, 4, 5 };
@@ -30,8 +32,8 @@ namespace FileExtensions.Awaitable
             {
                 await CleanupDirectoryAsync(_testDirectory);
             }
-            
-            Directory.CreateDirectory(_testDirectory);
+
+            _ = Directory.CreateDirectory(_testDirectory);
         }
 
         [TearDown]
@@ -60,7 +62,13 @@ namespace FileExtensions.Awaitable
                     // 모든 파일의 핸들을 해제하기 위해 시도
                     if (Directory.Exists(directory))
                     {
-                        foreach (string file in Directory.GetFiles(directory, "*", SearchOption.AllDirectories))
+                        foreach (
+                            string file in Directory.GetFiles(
+                                directory,
+                                "*",
+                                SearchOption.AllDirectories
+                            )
+                        )
                         {
                             try
                             {
@@ -78,14 +86,22 @@ namespace FileExtensions.Awaitable
                 }
                 catch (IOException)
                 {
-                    if (i == 2) throw;
+                    if (i == 2)
+                    {
+                        throw;
+                    }
+
                     await Task.Delay(100);
                     GC.Collect();
                     GC.WaitForPendingFinalizers();
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    if (i == 2) throw;
+                    if (i == 2)
+                    {
+                        throw;
+                    }
+
                     await Task.Delay(100);
                     GC.Collect();
                     GC.WaitForPendingFinalizers();

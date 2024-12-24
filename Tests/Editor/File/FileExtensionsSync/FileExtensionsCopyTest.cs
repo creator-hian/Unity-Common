@@ -1,7 +1,6 @@
 using System.IO;
-using NUnit.Framework;
-using UnityEngine;
 using Creator_Hian.Unity.Common;
+using NUnit.Framework;
 
 namespace FileExtensions.Sync
 {
@@ -47,10 +46,17 @@ namespace FileExtensions.Sync
             string sourcePath = Path.Combine(_testDirectoryPath, "source.txt");
             string destPath = Path.Combine(_testDirectoryPath, "dest.txt");
             Creator_Hian.Unity.Common.FileExtensions.WriteFileToPath(sourcePath, _testData);
-            Creator_Hian.Unity.Common.FileExtensions.WriteFileToPath(destPath, new byte[] { 5, 6, 7 });
+            Creator_Hian.Unity.Common.FileExtensions.WriteFileToPath(
+                destPath,
+                new byte[] { 5, 6, 7 }
+            );
 
             // Act
-            Creator_Hian.Unity.Common.FileExtensions.CopyFile(sourcePath, destPath, overwrite: true);
+            Creator_Hian.Unity.Common.FileExtensions.CopyFile(
+                sourcePath,
+                destPath,
+                overwrite: true
+            );
 
             // Assert
             Assert.That(File.Exists(destPath), Is.True);
@@ -69,8 +75,9 @@ namespace FileExtensions.Sync
             string destPath = Path.Combine(_testDirectoryPath, "dest.txt");
 
             // Act & Assert
-            Assert.Throws<FileNotFoundException>(() =>
-                Creator_Hian.Unity.Common.FileExtensions.CopyFile(sourcePath, destPath));
+            _ = Assert.Throws<FileNotFoundException>(
+                () => Creator_Hian.Unity.Common.FileExtensions.CopyFile(sourcePath, destPath)
+            );
         }
 
         /// <summary>
@@ -86,8 +93,14 @@ namespace FileExtensions.Sync
             Creator_Hian.Unity.Common.FileExtensions.WriteFileToPath(destPath, _testData);
 
             // Act & Assert
-            Assert.Throws<FileOperationException>(() =>
-                Creator_Hian.Unity.Common.FileExtensions.CopyFile(sourcePath, destPath, overwrite: false));
+            _ = Assert.Throws<FileOperationException>(
+                () =>
+                    Creator_Hian.Unity.Common.FileExtensions.CopyFile(
+                        sourcePath,
+                        destPath,
+                        overwrite: false
+                    )
+            );
         }
     }
-} 
+}

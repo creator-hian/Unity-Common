@@ -1,8 +1,6 @@
 #if UNITY_2023_2_OR_NEWER
-using System.IO;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using Creator_Hian.Unity.Common;
 
 namespace FileExtensions.Awaitable
 {
@@ -18,15 +16,24 @@ namespace FileExtensions.Awaitable
         public async Task CompareFilesAwaitable_SameContent_ReturnsTrue()
         {
             // Arrange
-            await Creator_Hian.Unity.Common.FileExtensions.WriteFileToPathAwaitable(_testFile1, _testData);
-            await Creator_Hian.Unity.Common.FileExtensions.WriteFileToPathAwaitable(_testFile2, _testData);
+            await Creator_Hian.Unity.Common.FileExtensions.WriteFileToPathAwaitable(
+                _testFile1,
+                _testData
+            );
+            await Creator_Hian.Unity.Common.FileExtensions.WriteFileToPathAwaitable(
+                _testFile2,
+                _testData
+            );
 
             // Act
-            bool result = await Creator_Hian.Unity.Common.FileExtensions.CompareFilesAwaitable(_testFile1, _testFile2);
+            bool result = await Creator_Hian.Unity.Common.FileExtensions.CompareFilesAwaitable(
+                _testFile1,
+                _testFile2
+            );
 
             // Assert
             Assert.That(result, Is.True);
         }
     }
 }
-#endif 
+#endif

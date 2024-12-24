@@ -28,4 +28,4 @@ namespace Creator_Hian.Unity.Common
         /// </summary>
         public IReadOnlyCollection<string> MimeTypes { get; }
     }
-} 
+}

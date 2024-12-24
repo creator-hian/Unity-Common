@@ -1,9 +1,6 @@
 using System.IO;
-using System.Threading.Tasks;
-using NUnit.Framework;
-using UnityEngine;
 using Creator_Hian.Unity.Common;
-using System.Threading;
+using NUnit.Framework;
 
 namespace FileExtensions.Sync
 {
@@ -50,8 +47,10 @@ namespace FileExtensions.Sync
             string invalidPath = Path.Combine(_testDirectoryPath, new string('*', 300));
 
             // Act & Assert
-            Assert.Throws<FilePathException>(() =>
-                Creator_Hian.Unity.Common.FileExtensions.WriteFileToPath(invalidPath, _testData));
+            _ = Assert.Throws<FilePathException>(
+                () =>
+                    Creator_Hian.Unity.Common.FileExtensions.WriteFileToPath(invalidPath, _testData)
+            );
         }
 
         /// <summary>
@@ -61,8 +60,9 @@ namespace FileExtensions.Sync
         public void WriteFileToPath_NullPath_ThrowsException()
         {
             // Act & Assert
-            Assert.Throws<FilePathException>(() =>
-                Creator_Hian.Unity.Common.FileExtensions.WriteFileToPath(null, _testData));
+            _ = Assert.Throws<FilePathException>(
+                () => Creator_Hian.Unity.Common.FileExtensions.WriteFileToPath(null, _testData)
+            );
         }
 
         /// <summary>
@@ -105,6 +105,5 @@ namespace FileExtensions.Sync
             byte[] readData = File.ReadAllBytes(filePath);
             Assert.That(readData, Is.EqualTo(largeData));
         }
-
     }
 }

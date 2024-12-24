@@ -17,11 +17,11 @@ namespace Creator_Hian.Unity.Common.Tests
             public const string Xml = ".xml";
             public const string Csv = ".csv";
             public const string Html = ".html";
-            
+
             public const string Jpeg = ".jpg";
             public const string Png = ".png";
             public const string Gif = ".gif";
-            
+
             public const string Pdf = ".pdf";
             public const string Zip = ".zip";
 
@@ -49,14 +49,14 @@ namespace Creator_Hian.Unity.Common.Tests
             public const string ApplicationXml = "application/xml";
             public const string TextCsv = "text/csv";
             public const string TextHtml = "text/html";
-            
+
             public const string ImageJpeg = "image/jpeg";
             public const string ImagePng = "image/png";
             public const string ImageGif = "image/gif";
-            
+
             public const string ApplicationPdf = "application/pdf";
             public const string ApplicationZip = "application/zip";
-            
+
             public const string UnityScene = "application/x-unity-scene";
             public const string UnityPrefab = "application/x-unity-prefab";
             public const string UnityAsset = "application/x-unity-asset";
@@ -84,7 +84,7 @@ namespace Creator_Hian.Unity.Common.Tests
             {
                 "test.tar.gz",
                 "script.cs.meta",
-                "archive.zip.backup"
+                "archive.zip.backup",
             };
 
             public static readonly string[] CaseSensitiveExtensions = new[]
@@ -93,7 +93,7 @@ namespace Creator_Hian.Unity.Common.Tests
                 "test.Txt",
                 "test.txt",
                 "TEST.PNG",
-                "test.png"
+                "test.png",
             };
 
             public static readonly string[] SpecialCharacterPaths = new[]
@@ -102,7 +102,7 @@ namespace Creator_Hian.Unity.Common.Tests
                 "file with spaces.unity",
                 "file#with#hash.prefab",
                 "file-with-dashes.mat",
-                "file_with_underscore.anim"
+                "file_with_underscore.anim",
             };
         }
 
@@ -112,8 +112,10 @@ namespace Creator_Hian.Unity.Common.Tests
         public static class Contents
         {
             public const string TextContent = "Test Data Content";
-            public const string JsonContent = "{\"test\": true}";
-            public const string XmlContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><test>true</test>";
+            public const string JsonContent = /*lang=json,strict*/
+                "{\"test\": true}";
+            public const string XmlContent =
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?><test>true</test>";
         }
 
         /// <summary>
@@ -137,4 +139,4 @@ namespace Creator_Hian.Unity.Common.Tests
             public const int DefaultBufferSize = 4096;
         }
     }
-} 
+}

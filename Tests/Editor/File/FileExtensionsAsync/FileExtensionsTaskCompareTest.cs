@@ -1,8 +1,5 @@
-using System;
-using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using Random = System.Random;
 
 namespace FileExtensions.Async
 {
@@ -33,12 +30,21 @@ namespace FileExtensions.Async
             try
             {
                 // Arrange
-                await Creator_Hian.Unity.Common.FileExtensions.WriteFileToPathAsync(_testFile1, _testData);
-                await Creator_Hian.Unity.Common.FileExtensions.WriteFileToPathAsync(_testFile2, _testData);
+                await Creator_Hian.Unity.Common.FileExtensions.WriteFileToPathAsync(
+                    _testFile1,
+                    _testData
+                );
+                await Creator_Hian.Unity.Common.FileExtensions.WriteFileToPathAsync(
+                    _testFile2,
+                    _testData
+                );
                 await Task.Delay(100);
 
                 // Act
-                bool result = await Creator_Hian.Unity.Common.FileExtensions.CompareFilesAsync(_testFile1, _testFile2);
+                bool result = await Creator_Hian.Unity.Common.FileExtensions.CompareFilesAsync(
+                    _testFile1,
+                    _testFile2
+                );
 
                 // Assert
                 Assert.That(result, Is.True);
@@ -64,12 +70,21 @@ namespace FileExtensions.Async
             try
             {
                 // Arrange
-                await Creator_Hian.Unity.Common.FileExtensions.WriteFileToPathAsync(_testFile1, _testData);
-                await Creator_Hian.Unity.Common.FileExtensions.WriteFileToPathAsync(_testFile2, new byte[] { 1, 2, 3 });
+                await Creator_Hian.Unity.Common.FileExtensions.WriteFileToPathAsync(
+                    _testFile1,
+                    _testData
+                );
+                await Creator_Hian.Unity.Common.FileExtensions.WriteFileToPathAsync(
+                    _testFile2,
+                    new byte[] { 1, 2, 3 }
+                );
                 await Task.Delay(100);
 
                 // Act
-                bool result = await Creator_Hian.Unity.Common.FileExtensions.CompareFilesAsync(_testFile1, _testFile2);
+                bool result = await Creator_Hian.Unity.Common.FileExtensions.CompareFilesAsync(
+                    _testFile1,
+                    _testFile2
+                );
 
                 // Assert
                 Assert.That(result, Is.False);
@@ -82,7 +97,7 @@ namespace FileExtensions.Async
 
         /// <summary>
         /// 파일 비교 중 취소 요청이 발생했을 때 예외가 발생하는지 테스트합니다.
-        /// 
+        ///
         /// TODO: 취소 테스트 추가
         /// </summary>
         [Test]

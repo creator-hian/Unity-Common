@@ -1,9 +1,9 @@
 using System;
 using System.IO;
-using NUnit.Framework;
 using System.Linq;
 using Creator_Hian.Unity.Common;
 using Creator_Hian.Unity.Common.Tests;
+using NUnit.Framework;
 
 /// <summary>
 /// FileTypeResolver의 기본 기능을 테스트합니다.
@@ -32,24 +32,35 @@ namespace FileExtensions.FileType
         public void GetFileType_CommonTypes_ReturnsCorrectType()
         {
             // Arrange
-            var testCases = new[]
+            (string, FileCategory)[] testCases = new[]
             {
-                ($"{FileTypeTestConstants.Paths.ValidFileName}{FileTypeTestConstants.Extensions.Text}", 
-                    FileCategory.Common.Text),
-                ($"{FileTypeTestConstants.Paths.ValidFileName}{FileTypeTestConstants.Extensions.Json}", 
-                    FileCategory.Common.Data),
-                ($"{FileTypeTestConstants.Paths.ValidFileName}{FileTypeTestConstants.Extensions.Png}", 
-                    FileCategory.Common.Image),
-                ($"{FileTypeTestConstants.Paths.ValidFileName}{FileTypeTestConstants.Extensions.Zip}", 
-                    FileCategory.Common.Archive)
+                (
+                    $"{FileTypeTestConstants.Paths.ValidFileName}{FileTypeTestConstants.Extensions.Text}",
+                    FileCategory.Common.Text
+                ),
+                (
+                    $"{FileTypeTestConstants.Paths.ValidFileName}{FileTypeTestConstants.Extensions.Json}",
+                    FileCategory.Common.Data
+                ),
+                (
+                    $"{FileTypeTestConstants.Paths.ValidFileName}{FileTypeTestConstants.Extensions.Png}",
+                    FileCategory.Common.Image
+                ),
+                (
+                    $"{FileTypeTestConstants.Paths.ValidFileName}{FileTypeTestConstants.Extensions.Zip}",
+                    FileCategory.Common.Archive
+                ),
             };
 
             // Act & Assert
-            foreach (var (path, expectedCategory) in testCases)
+            foreach ((string path, FileCategory expectedCategory) in testCases)
             {
-                var fileType = _resolver.GetFileType(path);
-                Assert.That(fileType.Category, Is.EqualTo(expectedCategory),
-                    $"Failed for extension: {Path.GetExtension(path)}");
+                IFileTypeInfo fileType = _resolver.GetFileType(path);
+                Assert.That(
+                    fileType.Category,
+                    Is.EqualTo(expectedCategory),
+                    $"Failed for extension: {Path.GetExtension(path)}"
+                );
             }
         }
 
@@ -61,20 +72,26 @@ namespace FileExtensions.FileType
         public void GetFileType_UnityTypes_ReturnsCorrectType()
         {
             // Arrange
-            var testCases = new[]
+            (string, FileCategory)[] testCases = new[]
             {
                 ($"Level1{FileTypeTestConstants.Extensions.Scene}", FileCategory.Unity.Scene),
                 ($"Player{FileTypeTestConstants.Extensions.Prefab}", FileCategory.Unity.Prefab),
-                ($"Character{FileTypeTestConstants.Extensions.Controller}", FileCategory.Unity.Animation),
-                ($"Walk{FileTypeTestConstants.Extensions.Animation}", FileCategory.Unity.Animation)
+                (
+                    $"Character{FileTypeTestConstants.Extensions.Controller}",
+                    FileCategory.Unity.Animation
+                ),
+                ($"Walk{FileTypeTestConstants.Extensions.Animation}", FileCategory.Unity.Animation),
             };
 
             // Act & Assert
-            foreach (var (path, expectedCategory) in testCases)
+            foreach ((string path, FileCategory expectedCategory) in testCases)
             {
-                var fileType = _resolver.GetFileType(path);
-                Assert.That(fileType.Category, Is.EqualTo(expectedCategory),
-                    $"Failed for extension: {Path.GetExtension(path)}");
+                IFileTypeInfo fileType = _resolver.GetFileType(path);
+                Assert.That(
+                    fileType.Category,
+                    Is.EqualTo(expectedCategory),
+                    $"Failed for extension: {Path.GetExtension(path)}"
+                );
             }
         }
 
@@ -85,14 +102,19 @@ namespace FileExtensions.FileType
         public void GetTypesByCategory_ImageCategory_ReturnsAllImageTypes()
         {
             // Act
-            var imageTypes = _resolver.GetTypesByCategory(FileCategory.Common.Image).ToList();
+            System.Collections.Generic.List<IFileTypeInfo> imageTypes = _resolver
+                .GetTypesByCategory(FileCategory.Common.Image)
+                .ToList();
 
             // Assert
             Assert.That(imageTypes, Has.Count.EqualTo(3));
-            Assert.That(imageTypes.Select(t => t.Extension),
-                Contains.Item(FileTypeTestConstants.Extensions.Png)
+            Assert.That(
+                imageTypes.Select(static t => t.Extension),
+                Contains
+                    .Item(FileTypeTestConstants.Extensions.Png)
                     .And.Contains(FileTypeTestConstants.Extensions.Jpeg)
-                    .And.Contains(FileTypeTestConstants.Extensions.Gif));
+                    .And.Contains(FileTypeTestConstants.Extensions.Gif)
+            );
         }
 
         /// <summary>
@@ -102,13 +124,18 @@ namespace FileExtensions.FileType
         public void GetTypesByCategory_AnimationCategory_ReturnsAllAnimationTypes()
         {
             // Act
-            var animTypes = _resolver.GetTypesByCategory(FileCategory.Unity.Animation).ToList();
+            System.Collections.Generic.List<IFileTypeInfo> animTypes = _resolver
+                .GetTypesByCategory(FileCategory.Unity.Animation)
+                .ToList();
 
             // Assert
             Assert.That(animTypes, Has.Count.EqualTo(2));
-            Assert.That(animTypes.Select(t => t.Extension),
-                Contains.Item(FileTypeTestConstants.Extensions.Animation)
-                    .And.Contains(FileTypeTestConstants.Extensions.Controller));
+            Assert.That(
+                animTypes.Select(static t => t.Extension),
+                Contains
+                    .Item(FileTypeTestConstants.Extensions.Animation)
+                    .And.Contains(FileTypeTestConstants.Extensions.Controller)
+            );
         }
 
         /// <summary>
@@ -119,20 +146,27 @@ namespace FileExtensions.FileType
         public void IsTypeOf_ValidPaths_ReturnsCorrectResult()
         {
             // Arrange
-            var testCases = new[]
+            (string, FileCategory, bool)[] testCases = new[]
             {
                 ($"test{FileTypeTestConstants.Extensions.Png}", FileCategory.Common.Image, true),
                 ($"test{FileTypeTestConstants.Extensions.Text}", FileCategory.Common.Image, false),
-                ($"character{FileTypeTestConstants.Extensions.Controller}", FileCategory.Unity.Animation, true),
-                ($"level{FileTypeTestConstants.Extensions.Scene}", FileCategory.Unity.Scene, true)
+                (
+                    $"character{FileTypeTestConstants.Extensions.Controller}",
+                    FileCategory.Unity.Animation,
+                    true
+                ),
+                ($"level{FileTypeTestConstants.Extensions.Scene}", FileCategory.Unity.Scene, true),
             };
 
             // Act & Assert
-            foreach (var (path, category, expected) in testCases)
+            foreach ((string path, FileCategory category, bool expected) in testCases)
             {
                 bool result = _resolver.IsTypeOf(path, category);
-                Assert.That(result, Is.EqualTo(expected),
-                    $"Failed for path: {path}, category: {category}");
+                Assert.That(
+                    result,
+                    Is.EqualTo(expected),
+                    $"Failed for path: {path}, category: {category}"
+                );
             }
         }
 
@@ -146,7 +180,7 @@ namespace FileExtensions.FileType
             string invalidPath = $"file{FileTypeTestConstants.Extensions.Unknown}";
 
             // Act
-            var fileType = _resolver.GetFileType(invalidPath);
+            IFileTypeInfo fileType = _resolver.GetFileType(invalidPath);
 
             // Assert
             Assert.That(fileType.Category, Is.EqualTo(FileCategory.Common.Unknown));
@@ -159,8 +193,8 @@ namespace FileExtensions.FileType
         public void GetFileType_NullOrEmptyPath_ThrowsArgumentNullException()
         {
             // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => _resolver.GetFileType(null));
-            Assert.Throws<ArgumentNullException>(() => _resolver.GetFileType(string.Empty));
+            _ = Assert.Throws<ArgumentNullException>(() => _resolver.GetFileType(null));
+            _ = Assert.Throws<ArgumentNullException>(() => _resolver.GetFileType(string.Empty));
         }
 
         /// <summary>
@@ -170,12 +204,16 @@ namespace FileExtensions.FileType
         public void GetTypesByMimeType_CaseInsensitive_ReturnsCorrectTypes()
         {
             // Arrange
-            var resolver = FileTypeResolver.Instance;
-            var type = new FileTypeDefinition(".txt", "Text File", FileCategory.Common.Text, "text/plain");
+            FileTypeResolver resolver = FileTypeResolver.Instance;
+            _ = new FileTypeDefinition(".txt", "Text File", FileCategory.Common.Text, "text/plain");
 
             // Act
-            var upperCaseTypes = resolver.GetTypesByMimeType("TEXT/PLAIN").ToList();
-            var lowerCaseTypes = resolver.GetTypesByMimeType("text/plain").ToList();
+            System.Collections.Generic.List<IFileTypeInfo> upperCaseTypes = resolver
+                .GetTypesByMimeType("TEXT/PLAIN")
+                .ToList();
+            System.Collections.Generic.List<IFileTypeInfo> lowerCaseTypes = resolver
+                .GetTypesByMimeType("text/plain")
+                .ToList();
 
             // Assert
             Assert.That(upperCaseTypes, Is.EqualTo(lowerCaseTypes));
@@ -188,10 +226,12 @@ namespace FileExtensions.FileType
         public void GetTypesByMimeType_NonExistentMimeType_ReturnsEmptyCollection()
         {
             // Arrange
-            var resolver = FileTypeResolver.Instance;
+            FileTypeResolver resolver = FileTypeResolver.Instance;
 
             // Act
-            var types = resolver.GetTypesByMimeType("application/nonexistent").ToList();
+            System.Collections.Generic.List<IFileTypeInfo> types = resolver
+                .GetTypesByMimeType("application/nonexistent")
+                .ToList();
 
             // Assert
             Assert.That(types, Is.Empty);
@@ -204,7 +244,7 @@ namespace FileExtensions.FileType
         public void GetTypesByMimeType_NullOrEmptyMimeType_ReturnsEmptyCollection()
         {
             // Arrange
-            var resolver = FileTypeResolver.Instance;
+            FileTypeResolver resolver = FileTypeResolver.Instance;
 
             // Act & Assert
             Assert.That(resolver.GetTypesByMimeType(null).ToList(), Is.Empty);

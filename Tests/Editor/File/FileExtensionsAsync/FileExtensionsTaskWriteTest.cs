@@ -1,10 +1,8 @@
-using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using NUnit.Framework;
-using UnityEngine;
 using Creator_Hian.Unity.Common;
+using NUnit.Framework;
 using Random = System.Random;
 
 namespace FileExtensions.Async
@@ -31,23 +29,29 @@ namespace FileExtensions.Async
         /// 2. 쓰여진 데이터가 원본과 일치하는지 확인
         /// 3. 파일 핸들이 적절히 해제되는지 확인
         /// </remarks>
-       [Test]
+        [Test]
         public async Task WriteFileToPathAsync_ValidPath_CreatesFile()
         {
             try
             {
                 // Act
-                await Creator_Hian.Unity.Common.FileExtensions.WriteFileToPathAsync(_testFile1, _testData);
+                await Creator_Hian.Unity.Common.FileExtensions.WriteFileToPathAsync(
+                    _testFile1,
+                    _testData
+                );
                 await Task.Delay(100); // 파일 핸들이 해제될 때까지 대기
 
                 // Assert
                 Assert.That(File.Exists(_testFile1), Is.True);
-                using (var fs = new FileStream(_testFile1, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                {
-                    byte[] readData = new byte[_testData.Length];
-                    await fs.ReadAsync(readData, 0, readData.Length);
-                    Assert.That(readData, Is.EqualTo(_testData));
-                }
+                using FileStream fs = new FileStream(
+                    _testFile1,
+                    FileMode.Open,
+                    FileAccess.Read,
+                    FileShare.ReadWrite
+                );
+                byte[] readData = new byte[_testData.Length];
+                _ = await fs.ReadAsync(readData, 0, readData.Length);
+                Assert.That(readData, Is.EqualTo(_testData));
             }
             finally
             {
@@ -55,7 +59,7 @@ namespace FileExtensions.Async
             }
         }
 
-          /// <summary>
+        /// <summary>
         /// 잘못된 경로로 파일 쓰기를 시도할 때의 예외 처리를 테스트합니다.
         /// </summary>
         [Test]
@@ -67,9 +71,14 @@ namespace FileExtensions.Async
             string invalidPath = Path.Combine(_testDirectory, new string('*', 300));
 
             // Act & Assert
-            var ex = Assert.ThrowsAsync<FilePathException>(async () =>
-                await Creator_Hian.Unity.Common.FileExtensions.WriteFileToPathAsync(invalidPath, _testData));
-            
+            FilePathException ex = Assert.ThrowsAsync<FilePathException>(
+                async () =>
+                    await Creator_Hian.Unity.Common.FileExtensions.WriteFileToPathAsync(
+                        invalidPath,
+                        _testData
+                    )
+            );
+
             StringAssert.Contains("유효하지 않은 파일 경로입니다", ex.Message);
         }
 
@@ -82,9 +91,14 @@ namespace FileExtensions.Async
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             // Act & Assert
-            var ex = Assert.ThrowsAsync<FilePathException>(async () =>
-                await Creator_Hian.Unity.Common.FileExtensions.WriteFileToPathAsync(null, _testData));
-            
+            FilePathException ex = Assert.ThrowsAsync<FilePathException>(
+                async () =>
+                    await Creator_Hian.Unity.Common.FileExtensions.WriteFileToPathAsync(
+                        null,
+                        _testData
+                    )
+            );
+
             StringAssert.Contains("경로가 null이거나 비어있습니다", ex.Message);
         }
 
@@ -96,15 +110,21 @@ namespace FileExtensions.Async
         {
             // Arrange
             string filePath = Path.Combine(_testDirectory, "testCancelled.txt");
-            using var cts = new CancellationTokenSource();
+            using CancellationTokenSource cts = new CancellationTokenSource();
             cts.Cancel(); // 즉시 취소
 
             try
             {
                 // Act & Assert
-                var ex = Assert.ThrowsAsync<FileWriteException>(async () =>
-                    await Creator_Hian.Unity.Common.FileExtensions.WriteFileToPathAsync(filePath, _testData, cancellationToken: cts.Token));
-                
+                FileWriteException ex = Assert.ThrowsAsync<FileWriteException>(
+                    async () =>
+                        await Creator_Hian.Unity.Common.FileExtensions.WriteFileToPathAsync(
+                            filePath,
+                            _testData,
+                            cancellationToken: cts.Token
+                        )
+                );
+
                 StringAssert.Contains("파일 쓰기가 취소되었습니다", ex.Message);
                 Assert.That(File.Exists(filePath), Is.False, "취소된 파일이 남아있습니다.");
             }
@@ -126,17 +146,23 @@ namespace FileExtensions.Async
                 string nestedPath = Path.Combine(_testDirectory, "nested", "folders", "test.txt");
 
                 // Act
-                await Creator_Hian.Unity.Common.FileExtensions.WriteFileToPathAsync(nestedPath, _testData);
+                await Creator_Hian.Unity.Common.FileExtensions.WriteFileToPathAsync(
+                    nestedPath,
+                    _testData
+                );
                 await Task.Delay(100);
 
                 // Assert
                 Assert.That(File.Exists(nestedPath), Is.True);
-                using (var fs = new FileStream(nestedPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                {
-                    byte[] readData = new byte[_testData.Length];
-                    await fs.ReadAsync(readData, 0, readData.Length);
-                    Assert.That(readData, Is.EqualTo(_testData));
-                }
+                using FileStream fs = new FileStream(
+                    nestedPath,
+                    FileMode.Open,
+                    FileAccess.Read,
+                    FileShare.ReadWrite
+                );
+                byte[] readData = new byte[_testData.Length];
+                _ = await fs.ReadAsync(readData, 0, readData.Length);
+                Assert.That(readData, Is.EqualTo(_testData));
             }
             finally
             {
@@ -158,20 +184,31 @@ namespace FileExtensions.Async
                 new Random().NextBytes(largeData);
 
                 // Act
-                await Creator_Hian.Unity.Common.FileExtensions.WriteFileToPathAsync(filePath, largeData, bufferSize: 8192);
+                await Creator_Hian.Unity.Common.FileExtensions.WriteFileToPathAsync(
+                    filePath,
+                    largeData,
+                    bufferSize: 8192
+                );
                 await Task.Delay(100);
 
                 // Assert
                 Assert.That(File.Exists(filePath), Is.True);
-                using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                using (
+                    FileStream fs = new FileStream(
+                        filePath,
+                        FileMode.Open,
+                        FileAccess.Read,
+                        FileShare.ReadWrite
+                    )
+                )
                 {
                     byte[] readData = new byte[largeData.Length];
-                    await fs.ReadAsync(readData, 0, readData.Length);
+                    _ = await fs.ReadAsync(readData, 0, readData.Length);
                     Assert.That(readData, Is.EqualTo(largeData));
                 }
 
                 // 파일 크기 확인
-                var fileInfo = new FileInfo(filePath);
+                FileInfo fileInfo = new FileInfo(filePath);
                 Assert.That(fileInfo.Length, Is.EqualTo(largeData.Length));
             }
             finally
@@ -180,4 +217,4 @@ namespace FileExtensions.Async
             }
         }
     }
-} 
+}

@@ -24,7 +24,7 @@ namespace Creator_Hian.Unity.Common
                 throw new FilePathException(string.Format(ErrorMsgNullPath, path));
             }
 
-            var fullPath = Path.GetFullPath(path);
+            string fullPath = Path.GetFullPath(path);
             if (!IsValidPath(fullPath))
             {
                 throw new FilePathException(string.Format(ErrorMsgInvalidPath, fullPath));
@@ -36,14 +36,15 @@ namespace Creator_Hian.Unity.Common
             try
             {
                 ValidatePath(path);
-                var fullPath = Path.GetFullPath(path);
+                string fullPath = Path.GetFullPath(path);
                 EnsureDirectoryExists(fullPath);
 
-                using var fileStream = new FileStream(
+                using FileStream fileStream = new FileStream(
                     fullPath,
                     FileMode.Create,
                     FileAccess.Write,
-                    FileShare.None);
+                    FileShare.None
+                );
                 fileStream.Write(dataBytes, 0, dataBytes.Length);
             }
             catch (FilePathException)
@@ -60,20 +61,22 @@ namespace Creator_Hian.Unity.Common
             }
         }
 
-
         private static int CalculateOptimalBufferSize(long fileSize)
         {
-            if (fileSize <= 0) return DefaultBufferSize;
-            
+            if (fileSize <= 0)
+            {
+                return DefaultBufferSize;
+            }
+
             // 파일 크기에 따른 버퍼 크기 조정
+
             if (fileSize > LargeFileThreshold) // 50MB 이상
             {
                 return Math.Min(262144, Math.Max(DefaultBufferSize, (int)(fileSize / 100))); // 최대 256KB
             }
-            
+
             return DefaultBufferSize;
         }
-
 
         /// <summary>
         /// 지정된 경로의 디렉토리가 존재하는지 확인하고, 없다면 생성합니다.
@@ -93,17 +96,21 @@ namespace Creator_Hian.Unity.Common
                 string directoryPath = Path.GetDirectoryName(path);
                 if (string.IsNullOrEmpty(directoryPath))
                 {
-                    throw new DirectoryCreationException($"Directory path is null or empty for file path: {path}");
+                    throw new DirectoryCreationException(
+                        $"Directory path is null or empty for file path: {path}"
+                    );
                 }
 
                 if (!Directory.Exists(directoryPath))
                 {
-                    Directory.CreateDirectory(directoryPath);
+                    _ = Directory.CreateDirectory(directoryPath);
                 }
             }
             catch (Exception ex)
             {
-                throw new DirectoryCreationException($"Failed to ensure directory exists: {path}. Exception: {ex}");
+                throw new DirectoryCreationException(
+                    $"Failed to ensure directory exists: {path}. Exception: {ex}"
+                );
             }
         }
 
@@ -112,17 +119,17 @@ namespace Creator_Hian.Unity.Common
             try
             {
                 // 이미 ValidatePath에서 null 체크를 하므로 중복 검사 제거
-                var fullPath = Path.GetFullPath(path);
+                string fullPath = Path.GetFullPath(path);
 
                 // 추가적인 보안 검사
                 if (Path.GetInvalidPathChars().Any(path.Contains))
+                {
                     return false;
+                }
 
                 // 절대 경로 길이 검사 (Windows의 경우 260자 제한)
-                if (fullPath.Length >= MaxPathLength)
-                    return false;
 
-                return true;
+                return fullPath.Length < MaxPathLength;
             }
             catch (Exception)
             {
@@ -142,21 +149,17 @@ namespace Creator_Hian.Unity.Common
             try
             {
                 ValidatePath(path);
-                var fullPath = Path.GetFullPath(path);
-                
-                if (!File.Exists(fullPath))
-                {
-                    throw new FileNotFoundException($"파일을 찾을 수 없습니다: {path}");
-                }
+                string fullPath = Path.GetFullPath(path);
 
-                return new FileInfo(fullPath).Length;
+                return !File.Exists(fullPath)
+                    ? throw new FileNotFoundException($"파일을 찾을 수 없습니다: {path}")
+                    : new FileInfo(fullPath).Length;
             }
-            catch (Exception ex) when (!(ex is FilePathException || ex is FileNotFoundException))
+            catch (Exception ex) when (ex is not (FilePathException or FileNotFoundException))
             {
                 throw new FileOperationException($"파일 크기 확인 실패: {path}", ex);
             }
         }
-
 
         /// <summary>
         /// 파일이 다른 프로세스에 의해 잠겨있는지 확인합니다.
@@ -166,9 +169,14 @@ namespace Creator_Hian.Unity.Common
             try
             {
                 ValidatePath(path);
-                var fullPath = Path.GetFullPath(path);
+                string fullPath = Path.GetFullPath(path);
 
-                using var stream = File.Open(fullPath, FileMode.Open, FileAccess.Write, FileShare.Read);
+                using FileStream stream = File.Open(
+                    fullPath,
+                    FileMode.Open,
+                    FileAccess.Write,
+                    FileShare.Read
+                );
                 return false;
             }
             catch (IOException)
@@ -184,18 +192,15 @@ namespace Creator_Hian.Unity.Common
         /// <summary>
         /// 두 파일이 동일한지 비교합니다.
         /// </summary>
-        public static bool CompareFiles(
-            string path1,
-            string path2,
-            bool compareContent = true)
+        public static bool CompareFiles(string path1, string path2, bool compareContent = true)
         {
             try
             {
                 ValidatePath(path1);
                 ValidatePath(path2);
 
-                var fullPath1 = Path.GetFullPath(path1);
-                var fullPath2 = Path.GetFullPath(path2);
+                string fullPath1 = Path.GetFullPath(path1);
+                string fullPath2 = Path.GetFullPath(path2);
 
                 if (!File.Exists(fullPath1) || !File.Exists(fullPath2))
                 {
@@ -204,62 +209,73 @@ namespace Creator_Hian.Unity.Common
 
                 // 내용 비교가 필요없으면 파일 존재 여부만으로 판단
                 if (!compareContent)
+                {
                     return true;
+                }
 
                 // 파일 크기 비교
-                var file1 = new FileInfo(fullPath1);
-                var file2 = new FileInfo(fullPath2);
+
+                FileInfo file1 = new FileInfo(fullPath1);
+                FileInfo file2 = new FileInfo(fullPath2);
 
                 if (file1.Length != file2.Length)
+                {
                     return false;
+                }
 
                 // 파일 크기에 따른 버퍼 크기 최적화
+
                 int bufferSize = CalculateOptimalBufferSize(file1.Length);
 
-                using var fs1 = new FileStream(
+                using FileStream fs1 = new FileStream(
                     fullPath1,
                     FileMode.Open,
                     FileAccess.Read,
                     FileShare.ReadWrite,
-                    bufferSize);
-                using var fs2 = new FileStream(
+                    bufferSize
+                );
+                using FileStream fs2 = new FileStream(
                     fullPath2,
                     FileMode.Open,
                     FileAccess.Read,
                     FileShare.ReadWrite,
-                    bufferSize);
+                    bufferSize
+                );
 
                 return CompareStreamContents(fs1, fs2, bufferSize);
             }
-            catch (Exception ex) when (!(ex is FilePathException || ex is FileNotFoundException))
+            catch (Exception ex) when (ex is not (FilePathException or FileNotFoundException))
             {
                 throw new FileOperationException($"파일 비교 실패: {path1}, {path2}", ex);
             }
         }
 
-        private static bool CompareStreamContents(
-            Stream stream1,
-            Stream stream2,
-            int bufferSize)
+        private static bool CompareStreamContents(Stream stream1, Stream stream2, int bufferSize)
         {
-            var buffer1 = new byte[bufferSize];
-            var buffer2 = new byte[bufferSize];
+            byte[] buffer1 = new byte[bufferSize];
+            byte[] buffer2 = new byte[bufferSize];
 
             while (true)
             {
-                var count1 = stream1.Read(buffer1, 0, bufferSize);
-                var count2 = stream2.Read(buffer2, 0, bufferSize);
+                int count1 = stream1.Read(buffer1, 0, bufferSize);
+                int count2 = stream2.Read(buffer2, 0, bufferSize);
 
                 if (count1 != count2)
+                {
                     return false;
+                }
 
                 if (count1 == 0)
+                {
                     return true;
+                }
 
                 for (int i = 0; i < count1; i++)
                 {
                     if (buffer1[i] != buffer2[i])
+                    {
                         return false;
+                    }
                 }
             }
         }
@@ -271,12 +287,18 @@ namespace Creator_Hian.Unity.Common
             string sourcePath,
             string destinationPath,
             bool overwrite = false,
-            int bufferSize = 4096)
+            int bufferSize = 4096
+        )
         {
             if (sourcePath == null)
+            {
                 throw new ArgumentNullException(nameof(sourcePath));
+            }
+
             if (destinationPath == null)
+            {
                 throw new ArgumentNullException(nameof(destinationPath));
+            }
 
             try
             {
@@ -284,71 +306,62 @@ namespace Creator_Hian.Unity.Common
                 ValidatePath(sourcePath);
                 ValidatePath(destinationPath);
 
-                var fullSourcePath = Path.GetFullPath(sourcePath);
-                var fullDestPath = Path.GetFullPath(destinationPath);
+                string fullSourcePath = Path.GetFullPath(sourcePath);
+                string fullDestPath = Path.GetFullPath(destinationPath);
 
                 // 파일 존재 여부 확인
                 if (!File.Exists(fullSourcePath))
+                {
                     throw new FileNotFoundException($"원본 파일을 찾을 수 없습니다: {sourcePath}");
+                }
 
                 if (File.Exists(fullDestPath) && !overwrite)
-                    throw new FileOperationException($"대상 파일이 이미 존재합니다: {destinationPath}");
+                {
+                    throw new FileOperationException(
+                        $"대상 파일이 이미 존재합니다: {destinationPath}"
+                    );
+                }
 
                 // 디렉토리 생성
+
                 EnsureDirectoryExists(fullDestPath);
 
                 // 실제 복사 작업 수행
                 DoCopy(fullSourcePath, fullDestPath, bufferSize);
             }
-            catch (Exception ex) when (!(ex is FilePathException || ex is FileNotFoundException))
+            catch (Exception ex) when (ex is not (FilePathException or FileNotFoundException))
             {
-                throw new FileOperationException($"파일 복사 실패: {sourcePath} -> {destinationPath}", ex);
+                throw new FileOperationException(
+                    $"파일 복사 실패: {sourcePath} -> {destinationPath}",
+                    ex
+                );
             }
         }
 
-        private static void DoCopy(
-            string sourcePath,
-            string destPath,
-            int bufferSize)
+        private static void DoCopy(string sourcePath, string destPath, int bufferSize)
         {
-            using var sourceStream = new FileStream(
+            using FileStream sourceStream = new FileStream(
                 sourcePath,
                 FileMode.Open,
                 FileAccess.Read,
                 FileShare.Read,
-                bufferSize);
+                bufferSize
+            );
 
-            using var destStream = new FileStream(
+            using FileStream destStream = new FileStream(
                 destPath,
                 FileMode.Create,
                 FileAccess.Write,
                 FileShare.None,
-                bufferSize);
+                bufferSize
+            );
 
-            var buffer = new byte[bufferSize];
+            byte[] buffer = new byte[bufferSize];
             int bytesRead;
 
             while ((bytesRead = sourceStream.Read(buffer, 0, buffer.Length)) > 0)
             {
                 destStream.Write(buffer, 0, bytesRead);
-            }
-        }
-
-        /// <summary>
-        /// 파일을 동기적으로 정리합니다.
-        /// </summary>
-        private static void Cleanup(string path)
-        {
-            if (string.IsNullOrEmpty(path)) return;
-
-            try
-            {
-                if (File.Exists(path))
-                    File.Delete(path);
-            }
-            catch
-            {
-                // 정리 실패는 무시
             }
         }
     }

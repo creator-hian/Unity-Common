@@ -19,8 +19,10 @@ namespace Creator_Hian.Unity.Common
         public static void RegisterTypeProvider(Func<IEnumerable<FileTypeDefinition>> provider)
         {
             if (provider == null)
+            {
                 throw new ArgumentNullException(nameof(provider));
-            
+            }
+
             TypeProviders.Add(provider);
         }
 
@@ -31,17 +33,23 @@ namespace Creator_Hian.Unity.Common
         public static IEnumerable<FileTypeDefinition> GetAllTypes()
         {
             // 기본 타입들
-            foreach (var type in Common.GetAll())
-                yield return type;
-            
-            foreach (var type in Unity.GetAll())
-                yield return type;
-            
-            // 확장 타입들
-            foreach (var provider in TypeProviders)
+            foreach (FileTypeDefinition type in Common.GetAll())
             {
-                foreach (var type in provider())
+                yield return type;
+            }
+
+            foreach (FileTypeDefinition type in Unity.GetAll())
+            {
+                yield return type;
+            }
+
+            // 확장 타입들
+            foreach (Func<IEnumerable<FileTypeDefinition>> provider in TypeProviders)
+            {
+                foreach (FileTypeDefinition type in provider())
+                {
                     yield return type;
+                }
             }
         }
     }

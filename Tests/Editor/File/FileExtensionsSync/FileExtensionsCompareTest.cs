@@ -1,8 +1,5 @@
 using System.IO;
-using System.Threading.Tasks;
 using NUnit.Framework;
-using UnityEngine;
-using Creator_Hian.Unity.Common;
 
 namespace FileExtensions.Sync
 {
@@ -67,7 +64,11 @@ namespace FileExtensions.Sync
             Creator_Hian.Unity.Common.FileExtensions.WriteFileToPath(path2, new byte[] { 1, 2, 3 });
 
             // Act
-            bool result = Creator_Hian.Unity.Common.FileExtensions.CompareFiles(path1, path2, compareContent: false);
+            bool result = Creator_Hian.Unity.Common.FileExtensions.CompareFiles(
+                path1,
+                path2,
+                compareContent: false
+            );
 
             // Assert
             Assert.That(result, Is.True);
@@ -85,8 +86,9 @@ namespace FileExtensions.Sync
             Creator_Hian.Unity.Common.FileExtensions.WriteFileToPath(path1, _testData);
 
             // Act & Assert
-            Assert.Throws<FileNotFoundException>(() =>
-                Creator_Hian.Unity.Common.FileExtensions.CompareFiles(path1, path2));
+            _ = Assert.Throws<FileNotFoundException>(
+                () => Creator_Hian.Unity.Common.FileExtensions.CompareFiles(path1, path2)
+            );
         }
     }
-} 
+}

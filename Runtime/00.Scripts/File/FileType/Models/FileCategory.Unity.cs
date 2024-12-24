@@ -38,7 +38,11 @@ namespace Creator_Hian.Unity.Common
             /// <summary>
             /// Unity 애니메이션 파일을 나타내는 카테고리입니다.
             /// </summary>
-            public static readonly FileCategory Animation = new("Animation", "Unity Animation File");
+            public static readonly FileCategory Animation = new(
+                "Animation",
+                "Unity Animation File"
+            );
+
             // ReSharper restore MemberCanBePrivate.Global
 
             /// <summary>
@@ -55,4 +59,4 @@ namespace Creator_Hian.Unity.Common
             }
         }
     }
-} 
+}

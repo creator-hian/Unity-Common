@@ -2,7 +2,6 @@
 using System.IO;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using Creator_Hian.Unity.Common;
 
 namespace FileExtensions.Awaitable
 {
@@ -18,34 +17,54 @@ namespace FileExtensions.Awaitable
         public async Task CopyFileAwaitable_ValidPaths_CopiesFile()
         {
             // Arrange
-            await Creator_Hian.Unity.Common.FileExtensions.WriteFileToPathAwaitable(_testFile1, _testData);
+            await Creator_Hian.Unity.Common.FileExtensions.WriteFileToPathAwaitable(
+                _testFile1,
+                _testData
+            );
             await Task.Delay(100); // 파일 핸들이 해제될 때까지 대기
 
             // Act
-            await Creator_Hian.Unity.Common.FileExtensions.CopyFileAwaitable(_testFile1, _testFile2);
+            await Creator_Hian.Unity.Common.FileExtensions.CopyFileAwaitable(
+                _testFile1,
+                _testFile2
+            );
             await Task.Delay(100); // 파일 핸들이 해제될 때까지 대기
 
             // Assert
             Assert.That(File.Exists(_testFile2), Is.True);
-            
+
             // 파일 내용 비교를 위해 안전한 방식으로 읽기
             byte[] sourceData;
             byte[] destData;
-            
-            using (var fs1 = new FileStream(_testFile1, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+
+            using (
+                FileStream fs1 = new FileStream(
+                    _testFile1,
+                    FileMode.Open,
+                    FileAccess.Read,
+                    FileShare.ReadWrite
+                )
+            )
             {
                 sourceData = new byte[fs1.Length];
-                await fs1.ReadAsync(sourceData, 0, sourceData.Length);
+                _ = await fs1.ReadAsync(sourceData, 0, sourceData.Length);
             }
-            
-            using (var fs2 = new FileStream(_testFile2, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+
+            using (
+                FileStream fs2 = new FileStream(
+                    _testFile2,
+                    FileMode.Open,
+                    FileAccess.Read,
+                    FileShare.ReadWrite
+                )
+            )
             {
                 destData = new byte[fs2.Length];
-                await fs2.ReadAsync(destData, 0, destData.Length);
+                _ = await fs2.ReadAsync(destData, 0, destData.Length);
             }
-            
+
             Assert.That(destData, Is.EqualTo(sourceData));
         }
     }
 }
-#endif 
+#endif

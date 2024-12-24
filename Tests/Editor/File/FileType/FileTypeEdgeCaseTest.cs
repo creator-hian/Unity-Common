@@ -1,6 +1,6 @@
-using NUnit.Framework;
 using Creator_Hian.Unity.Common;
 using Creator_Hian.Unity.Common.Tests;
+using NUnit.Framework;
 
 /// <summary>
 /// FileTypeResolver의 엣지 케이스 처리를 테스트합니다.
@@ -26,11 +26,11 @@ namespace FileExtensions.FileType
         public void GetFileType_SpecialCharacters_HandlesCorrectly()
         {
             // Act & Assert
-            foreach (var path in FileTypeTestConstants.Paths.SpecialCharacterPaths)
+            foreach (string path in FileTypeTestConstants.Paths.SpecialCharacterPaths)
             {
                 Assert.DoesNotThrow(() =>
                 {
-                    var fileType = _resolver.GetFileType(path);
+                    IFileTypeInfo fileType = _resolver.GetFileType(path);
                     Assert.That(fileType, Is.Not.Null);
                 });
             }
@@ -44,11 +44,10 @@ namespace FileExtensions.FileType
         public void GetFileType_MultipleExtensions_UsesLastExtension()
         {
             // Act & Assert
-            foreach (var path in FileTypeTestConstants.Paths.MultipleExtensions)
+            foreach (string path in FileTypeTestConstants.Paths.MultipleExtensions)
             {
-                var fileType = _resolver.GetFileType(path);
-                Assert.That(fileType.Extension, Is.EqualTo(
-                    System.IO.Path.GetExtension(path)));
+                IFileTypeInfo fileType = _resolver.GetFileType(path);
+                Assert.That(fileType.Extension, Is.EqualTo(System.IO.Path.GetExtension(path)));
             }
         }
 
@@ -60,11 +59,11 @@ namespace FileExtensions.FileType
         public void GetFileType_CaseSensitivity_HandlesCorrectly()
         {
             // Act & Assert
-            foreach (var path in FileTypeTestConstants.Paths.CaseSensitiveExtensions)
+            foreach (string path in FileTypeTestConstants.Paths.CaseSensitiveExtensions)
             {
-                var fileType = _resolver.GetFileType(path);
+                IFileTypeInfo fileType = _resolver.GetFileType(path);
                 Assert.That(fileType.Category, Is.Not.EqualTo(FileCategory.Common.Unknown));
             }
         }
     }
-} 
+}

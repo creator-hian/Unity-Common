@@ -30,8 +30,9 @@ namespace Creator_Hian.Unity.Common
             Description = description;
         }
 
-        private static readonly Dictionary<string, FileCategory> Categories
-            = new(StringComparer.OrdinalIgnoreCase);
+        private static readonly Dictionary<string, FileCategory> Categories = new(
+            StringComparer.OrdinalIgnoreCase
+        );
 
         private static readonly HashSet<Action> CustomCategoryInitializers = new();
 
@@ -43,9 +44,11 @@ namespace Creator_Hian.Unity.Common
         public static void RegisterCustomCategoryInitializer(Action initializeAction)
         {
             if (initializeAction == null)
+            {
                 throw new ArgumentNullException(nameof(initializeAction));
+            }
 
-            CustomCategoryInitializers.Add(initializeAction);
+            _ = CustomCategoryInitializers.Add(initializeAction);
         }
 
         private static void InitializeAllCategories()
@@ -53,13 +56,13 @@ namespace Creator_Hian.Unity.Common
             RegisterBuiltInCategories();
 
             // 등록된 모든 커스텀 카테고리 초기화
-            foreach (var initializer in CustomCategoryInitializers)
+            foreach (Action initializer in CustomCategoryInitializers)
             {
                 initializer.Invoke();
             }
         }
 
-        private static readonly Lazy<bool> Initialization = new(() =>
+        private static readonly Lazy<bool> Initialization = new(static () =>
         {
             InitializeAllCategories();
             return true;
@@ -78,6 +81,7 @@ namespace Creator_Hian.Unity.Common
             Common.RegisterAll();
             Unity.RegisterAll();
         }
+
         // ReSharper disable once MemberCanBePrivate.Global
         /// <summary>
         /// 새로운 카테고리를 등록합니다.
@@ -87,7 +91,9 @@ namespace Creator_Hian.Unity.Common
         public static void RegisterCategory(FileCategory category)
         {
             if (category == null)
+            {
                 throw new ArgumentNullException(nameof(category));
+            }
 
             Categories[category.Name] = category;
         }
@@ -101,11 +107,8 @@ namespace Creator_Hian.Unity.Common
         {
             EnsureInitialized();
 
-            if (string.IsNullOrWhiteSpace(name))
-                return Common.Unknown;
-
-            return Categories.TryGetValue(name, out var category)
-                ? category
+            return string.IsNullOrWhiteSpace(name) ? Common.Unknown
+                : Categories.TryGetValue(name, out FileCategory category) ? category
                 : Common.Unknown;
         }
 
@@ -113,14 +116,17 @@ namespace Creator_Hian.Unity.Common
         /// 현재 카테고리의 문자열 표현을 반환합니다.
         /// </summary>
         /// <returns>카테고리의 이름</returns>
-        public override string ToString() => Name;
+        public override string ToString()
+        {
+            return Name;
+        }
 
         /// <summary>
         /// 새로운 FileCategory를 생성하고 등록합니다.
         /// </summary>
         public static FileCategory CreateCategory(string name, string description)
         {
-            var category = new FileCategory(name, description);
+            FileCategory category = new FileCategory(name, description);
             RegisterCategory(category);
             return category;
         }
