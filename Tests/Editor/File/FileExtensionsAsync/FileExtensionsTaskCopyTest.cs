@@ -1,11 +1,7 @@
-using System;
 using System.IO;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using Creator_Hian.Unity.Common;
-using Random = System.Random;
 
 namespace FileExtensions.Async
 {
@@ -43,7 +39,10 @@ namespace FileExtensions.Async
                 await Task.Delay(100);
 
                 // Act
-                await Creator_Hian.Unity.Common.FileExtensions.CopyFileAsync(_testFile1, _testFile2);
+                await Creator_Hian.Unity.Common.FileExtensions.CopyFileAsync(
+                    _testFile1,
+                    _testFile2
+                );
                 await Task.Delay(100);
 
                 // Assert
@@ -59,7 +58,7 @@ namespace FileExtensions.Async
 
         /// <summary>
         /// 파일 복사 중 취소 요청이 정상적으로 처리되는지 테스트합니다.
-        ///     
+        ///
         /// TODO: 취소 테스트 추가
         /// </summary>
         [Test]
@@ -151,7 +150,11 @@ namespace FileExtensions.Async
                 await Task.Delay(100);
 
                 // Act
-                await Creator_Hian.Unity.Common.FileExtensions.CopyFileAsync(_testFile1, _testFile2, overwrite: true);
+                await Creator_Hian.Unity.Common.FileExtensions.CopyFileAsync(
+                    _testFile1,
+                    _testFile2,
+                    overwrite: true
+                );
                 await Task.Delay(100);
 
                 // Assert
@@ -165,4 +168,4 @@ namespace FileExtensions.Async
             }
         }
     }
-} 
+}

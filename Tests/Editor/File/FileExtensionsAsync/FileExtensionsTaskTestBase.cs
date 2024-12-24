@@ -38,8 +38,8 @@ namespace FileExtensions.Async
             {
                 CleanupDirectory(_testDirectory);
             }
-            
-            Directory.CreateDirectory(_testDirectory);
+
+            _ = Directory.CreateDirectory(_testDirectory);
         }
 
         /// <summary>
@@ -73,7 +73,11 @@ namespace FileExtensions.Async
                 }
                 catch (IOException)
                 {
-                    if (i == 2) throw;
+                    if (i == 2)
+                    {
+                        throw;
+                    }
+
                     Thread.Sleep(100);
                     GC.Collect();
                     GC.WaitForPendingFinalizers();
@@ -81,4 +85,4 @@ namespace FileExtensions.Async
             }
         }
     }
-} 
+}

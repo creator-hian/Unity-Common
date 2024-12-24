@@ -1,8 +1,8 @@
-using NUnit.Framework;
-using Creator_Hian.Unity.Common;
-using Creator_Hian.Unity.Common.Tests;
 using System;
 using System.Linq;
+using Creator_Hian.Unity.Common;
+using Creator_Hian.Unity.Common.Tests;
+using NUnit.Framework;
 
 /// <summary>
 /// FileTypeDefinition 클래스의 생성과 동작을 테스트합니다.
@@ -26,7 +26,12 @@ namespace FileExtensions.FileType
             string[] mimeTypes = { FileConstants.MimeTypes.Text.Plain };
 
             // Act
-            var definition = new FileTypeDefinition(extension, description, category, mimeTypes);
+            FileTypeDefinition definition = new FileTypeDefinition(
+                extension,
+                description,
+                category,
+                mimeTypes
+            );
 
             // Assert
             Assert.That(definition.Extension, Is.EqualTo(extension));
@@ -46,8 +51,9 @@ namespace FileExtensions.FileType
             FileCategory category = FileCategory.Common.Text;
 
             // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => 
-                new FileTypeDefinition(null, description, category));
+            _ = Assert.Throws<ArgumentNullException>(
+                () => new FileTypeDefinition(null, description, category)
+            );
         }
 
         /// <summary>
@@ -61,7 +67,7 @@ namespace FileExtensions.FileType
             string description = FileTypeTestConstants.Descriptions.Text;
 
             // Act
-            var definition = new FileTypeDefinition(extension, description, null);
+            FileTypeDefinition definition = new FileTypeDefinition(extension, description, null);
 
             // Assert
             Assert.That(definition.Category, Is.EqualTo(FileCategory.Common.Unknown));
@@ -78,7 +84,7 @@ namespace FileExtensions.FileType
             FileCategory category = FileCategory.Common.Text;
 
             // Act
-            var definition = new FileTypeDefinition(extension, null, category);
+            FileTypeDefinition definition = new FileTypeDefinition(extension, null, category);
 
             // Assert
             Assert.That(definition.Description, Is.EqualTo(FileConstants.Descriptions.Unknown));
@@ -96,10 +102,17 @@ namespace FileExtensions.FileType
             FileCategory category = FileCategory.Common.Text;
 
             // Act
-            var definition = new FileTypeDefinition(extension, description, category);
+            FileTypeDefinition definition = new FileTypeDefinition(
+                extension,
+                description,
+                category
+            );
 
             // Assert
-            Assert.That(definition.MimeTypes, Is.EquivalentTo(new[] { FileConstants.MimeTypes.Default }));
+            Assert.That(
+                definition.MimeTypes,
+                Is.EquivalentTo(new[] { FileConstants.MimeTypes.Default })
+            );
         }
 
         /// <summary>
@@ -109,10 +122,11 @@ namespace FileExtensions.FileType
         public void Extension_AlwaysLowerCase()
         {
             // Arrange & Act
-            var definition = new FileTypeDefinition(
-                FileTypeTestConstants.Extensions.Text.ToUpper(), 
-                FileTypeTestConstants.Descriptions.Text, 
-                FileCategory.Common.Text);
+            FileTypeDefinition definition = new FileTypeDefinition(
+                FileTypeTestConstants.Extensions.Text.ToUpper(),
+                FileTypeTestConstants.Descriptions.Text,
+                FileCategory.Common.Text
+            );
 
             // Assert
             Assert.That(definition.Extension, Is.EqualTo(FileTypeTestConstants.Extensions.Text));
@@ -125,14 +139,27 @@ namespace FileExtensions.FileType
         public void MimeTypes_CaseInsensitiveComparison()
         {
             // Arrange
-            var type1 = new FileTypeDefinition(".txt", "Text File", FileCategory.Common.Text, "TEXT/PLAIN");
-            var type2 = new FileTypeDefinition(".txt", "Text File", FileCategory.Common.Text, "text/plain");
+            FileTypeDefinition type1 = new FileTypeDefinition(
+                ".txt",
+                "Text File",
+                FileCategory.Common.Text,
+                "TEXT/PLAIN"
+            );
+            FileTypeDefinition type2 = new FileTypeDefinition(
+                ".txt",
+                "Text File",
+                FileCategory.Common.Text,
+                "text/plain"
+            );
 
             // Assert
-            Assert.That(string.Equals(
-                type1.MimeTypes.First(), 
-                type2.MimeTypes.First(), 
-                StringComparison.OrdinalIgnoreCase));
+            Assert.That(
+                string.Equals(
+                    type1.MimeTypes.First(),
+                    type2.MimeTypes.First(),
+                    StringComparison.OrdinalIgnoreCase
+                )
+            );
         }
 
         /// <summary>
@@ -142,8 +169,18 @@ namespace FileExtensions.FileType
         public void FileTypeDefinition_Equality()
         {
             // Arrange
-            var type1 = new FileTypeDefinition(".txt", "Text File", FileCategory.Common.Text, "text/plain");
-            var type2 = new FileTypeDefinition(".txt", "Text File", FileCategory.Common.Text, "text/plain");
+            FileTypeDefinition type1 = new FileTypeDefinition(
+                ".txt",
+                "Text File",
+                FileCategory.Common.Text,
+                "text/plain"
+            );
+            FileTypeDefinition type2 = new FileTypeDefinition(
+                ".txt",
+                "Text File",
+                FileCategory.Common.Text,
+                "text/plain"
+            );
 
             // Assert
             Assert.That(type1, Is.EqualTo(type2));
@@ -157,10 +194,20 @@ namespace FileExtensions.FileType
         public void FileTypeDefinition_MultiMimeTypeEquality()
         {
             // Arrange
-            var type1 = new FileTypeDefinition(".xml", "XML File", FileCategory.Common.Data, 
-                "application/xml", "text/xml");
-            var type2 = new FileTypeDefinition(".xml", "XML File", FileCategory.Common.Data, 
-                "text/xml", "application/xml");  // 순서가 다름
+            FileTypeDefinition type1 = new FileTypeDefinition(
+                ".xml",
+                "XML File",
+                FileCategory.Common.Data,
+                "application/xml",
+                "text/xml"
+            );
+            FileTypeDefinition type2 = new FileTypeDefinition(
+                ".xml",
+                "XML File",
+                FileCategory.Common.Data,
+                "text/xml",
+                "application/xml"
+            ); // 순서가 다름
 
             // Assert
             Assert.That(type1, Is.EqualTo(type2));
@@ -174,13 +221,18 @@ namespace FileExtensions.FileType
         public void HasMimeType_ChecksCorrectly()
         {
             // Arrange
-            var type = new FileTypeDefinition(".xml", "XML File", FileCategory.Common.Data,
-                "application/xml", "text/xml");
+            FileTypeDefinition type = new FileTypeDefinition(
+                ".xml",
+                "XML File",
+                FileCategory.Common.Data,
+                "application/xml",
+                "text/xml"
+            );
 
             // Assert - 각각의 케이스를 개별적으로 테스트
             Assert.That(type.HasMimeType("application/xml"), Is.True);
             Assert.That(type.HasMimeType("text/xml"), Is.True);
-            Assert.That(type.HasMimeType("APPLICATION/XML"), Is.True);  // 대소문자 구분 없음
+            Assert.That(type.HasMimeType("APPLICATION/XML"), Is.True); // 대소문자 구분 없음
             Assert.That(type.HasMimeType("application/json"), Is.False);
             Assert.That(type.HasMimeType(null), Is.False);
             Assert.That(type.HasMimeType(""), Is.False);
@@ -193,7 +245,12 @@ namespace FileExtensions.FileType
         public void Constructor_EmptyMimeTypes_UsesDefaultMimeType()
         {
             // Arrange & Act
-            var definition = new FileTypeDefinition(".txt", "Text File", FileCategory.Common.Text, Array.Empty<string>());
+            FileTypeDefinition definition = new FileTypeDefinition(
+                ".txt",
+                "Text File",
+                FileCategory.Common.Text,
+                Array.Empty<string>()
+            );
 
             // Assert
             Assert.That(definition.MimeTypes.ToArray(), Has.Length.EqualTo(1));
@@ -210,10 +267,15 @@ namespace FileExtensions.FileType
             string[] mimeTypes = { "text/plain", null, "", "  ", "application/json" };
 
             // Act
-            var definition = new FileTypeDefinition(".txt", "Text File", FileCategory.Common.Text, mimeTypes);
+            FileTypeDefinition definition = new FileTypeDefinition(
+                ".txt",
+                "Text File",
+                FileCategory.Common.Text,
+                mimeTypes
+            );
 
             // Assert
-            var resultArray = definition.MimeTypes.ToArray();
+            string[] resultArray = definition.MimeTypes.ToArray();
             Assert.That(resultArray, Has.Length.EqualTo(2));
             CollectionAssert.Contains(resultArray, "text/plain");
             CollectionAssert.Contains(resultArray, "application/json");
@@ -229,12 +291,17 @@ namespace FileExtensions.FileType
             string[] mimeTypes = { "text/plain", "TEXT/PLAIN", "text/plain" };
 
             // Act
-            var definition = new FileTypeDefinition(".txt", "Text File", FileCategory.Common.Text, mimeTypes);
+            FileTypeDefinition definition = new FileTypeDefinition(
+                ".txt",
+                "Text File",
+                FileCategory.Common.Text,
+                mimeTypes
+            );
 
             // Assert
-            var resultArray = definition.MimeTypes.ToArray();
+            string[] resultArray = definition.MimeTypes.ToArray();
             Assert.That(resultArray, Has.Length.EqualTo(1));
             Assert.That(resultArray[0], Is.EqualTo("text/plain"));
         }
     }
-} 
+}

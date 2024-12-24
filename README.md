@@ -46,10 +46,11 @@ Unity 프로젝트에서 자주 사용되는 기본적인 기능들을 제공하
 ```text
 https://github.com/creator-hian/Unity-Common.git
 ```
-
+<!-- markdownlint-disable MD029 -->
 4. 'Add' 버튼을 클릭합니다.
 
    ![Package Manager Add Button](https://i.imgur.com/yIiD4tT.png)
+<!-- markdownlint-enable MD029 -->
 
 #### 설치 방법 2: manifest.json 직접 수정
 

@@ -1,7 +1,7 @@
-using NUnit.Framework;
 using System;
-using Creator_Hian.Unity.Common;
 using System.IO;
+using Creator_Hian.Unity.Common;
+using NUnit.Framework;
 
 namespace FileExtensions.Exceptions
 {
@@ -23,17 +23,25 @@ namespace FileExtensions.Exceptions
         public void DirectoryCreationException_Constructor_Tests()
         {
             // 기본 생성자 테스트
-            var ex1 = new DirectoryCreationException();
-            Assert.That(ex1.Message, Is.EqualTo("Exception of type 'Creator_Hian.Unity.Common.DirectoryCreationException' was thrown."));
+            DirectoryCreationException ex1 = new DirectoryCreationException();
+            Assert.That(
+                ex1.Message,
+                Is.EqualTo(
+                    "Exception of type 'Creator_Hian.Unity.Common.DirectoryCreationException' was thrown."
+                )
+            );
 
             // 메시지와 함께 생성
             string message = "디렉토리 생성 실패";
-            var ex2 = new DirectoryCreationException(message);
+            DirectoryCreationException ex2 = new DirectoryCreationException(message);
             Assert.That(ex2.Message, Is.EqualTo(message));
 
             // 내부 예외와 함께 생성
-            var innerException = new Exception("내부 오류");
-            var ex3 = new DirectoryCreationException(message, innerException);
+            Exception innerException = new Exception("내부 오류");
+            DirectoryCreationException ex3 = new DirectoryCreationException(
+                message,
+                innerException
+            );
             Assert.That(ex3.Message, Is.EqualTo(message));
             Assert.That(ex3.InnerException, Is.EqualTo(innerException));
         }
@@ -51,17 +59,22 @@ namespace FileExtensions.Exceptions
         public void FilePathException_Constructor_Tests()
         {
             // 기본 생성자 테스트
-            var ex1 = new FilePathException();
-            Assert.That(ex1.Message, Is.EqualTo("Exception of type 'Creator_Hian.Unity.Common.FilePathException' was thrown."));
+            FilePathException ex1 = new FilePathException();
+            Assert.That(
+                ex1.Message,
+                Is.EqualTo(
+                    "Exception of type 'Creator_Hian.Unity.Common.FilePathException' was thrown."
+                )
+            );
 
             // 메시지와 함께 생성
             string message = "잘못된 파일 경로";
-            var ex2 = new FilePathException(message);
+            FilePathException ex2 = new FilePathException(message);
             Assert.That(ex2.Message, Is.EqualTo(message));
 
             // 내부 예외와 함께 생성
-            var innerException = new Exception("내부 오류");
-            var ex3 = new FilePathException(message, innerException);
+            Exception innerException = new Exception("내부 오류");
+            FilePathException ex3 = new FilePathException(message, innerException);
             Assert.That(ex3.Message, Is.EqualTo(message));
             Assert.That(ex3.InnerException, Is.EqualTo(innerException));
         }
@@ -79,17 +92,22 @@ namespace FileExtensions.Exceptions
         public void FileWriteException_Constructor_Tests()
         {
             // 기본 생성자 테스트
-            var ex1 = new FileWriteException();
-            Assert.That(ex1.Message, Is.EqualTo("Exception of type 'Creator_Hian.Unity.Common.FileWriteException' was thrown."));
+            FileWriteException ex1 = new FileWriteException();
+            Assert.That(
+                ex1.Message,
+                Is.EqualTo(
+                    "Exception of type 'Creator_Hian.Unity.Common.FileWriteException' was thrown."
+                )
+            );
 
             // 메시지와 함께 생성
             string message = "파일 쓰기 실패";
-            var ex2 = new FileWriteException(message);
+            FileWriteException ex2 = new FileWriteException(message);
             Assert.That(ex2.Message, Is.EqualTo(message));
 
             // 내부 예외와 함께 생성
-            var innerException = new Exception("내부 오류");
-            var ex3 = new FileWriteException(message, innerException);
+            Exception innerException = new Exception("내부 오류");
+            FileWriteException ex3 = new FileWriteException(message, innerException);
             Assert.That(ex3.Message, Is.EqualTo(message));
             Assert.That(ex3.InnerException, Is.EqualTo(innerException));
         }
@@ -107,17 +125,22 @@ namespace FileExtensions.Exceptions
         public void FileTypeResolveException_Constructor_Tests()
         {
             // 기본 생성자 테스트
-            var ex1 = new FileTypeResolveException();
-            Assert.That(ex1.Message, Is.EqualTo("Exception of type 'Creator_Hian.Unity.Common.FileTypeResolveException' was thrown."));
+            FileTypeResolveException ex1 = new FileTypeResolveException();
+            Assert.That(
+                ex1.Message,
+                Is.EqualTo(
+                    "Exception of type 'Creator_Hian.Unity.Common.FileTypeResolveException' was thrown."
+                )
+            );
 
             // 메시지와 함께 생성
             string message = "파일 타입 해석 실패";
-            var ex2 = new FileTypeResolveException(message);
+            FileTypeResolveException ex2 = new FileTypeResolveException(message);
             Assert.That(ex2.Message, Is.EqualTo(message));
 
             // 내부 예외와 함께 생성
-            var innerException = new Exception("내부 오류");
-            var ex3 = new FileTypeResolveException(message, innerException);
+            Exception innerException = new Exception("내부 오류");
+            FileTypeResolveException ex3 = new FileTypeResolveException(message, innerException);
             Assert.That(ex3.Message, Is.EqualTo(message));
             Assert.That(ex3.InnerException, Is.EqualTo(innerException));
         }
@@ -135,17 +158,22 @@ namespace FileExtensions.Exceptions
         public void FileOperationException_Constructor_Tests()
         {
             // 기본 생성자 테스트
-            var ex1 = new FileOperationException();
-            Assert.That(ex1.Message, Is.EqualTo("Exception of type 'Creator_Hian.Unity.Common.FileOperationException' was thrown."));
+            FileOperationException ex1 = new FileOperationException();
+            Assert.That(
+                ex1.Message,
+                Is.EqualTo(
+                    "Exception of type 'Creator_Hian.Unity.Common.FileOperationException' was thrown."
+                )
+            );
 
             // 메시지와 함께 생성
             string message = "파일 작업 실패";
-            var ex2 = new FileOperationException(message);
+            FileOperationException ex2 = new FileOperationException(message);
             Assert.That(ex2.Message, Is.EqualTo(message));
 
             // 내부 예외와 함께 생성
-            var innerException = new Exception("내부 오류");
-            var ex3 = new FileOperationException(message, innerException);
+            Exception innerException = new Exception("내부 오류");
+            FileOperationException ex3 = new FileOperationException(message, innerException);
             Assert.That(ex3.Message, Is.EqualTo(message));
             Assert.That(ex3.InnerException, Is.EqualTo(innerException));
         }
@@ -157,20 +185,28 @@ namespace FileExtensions.Exceptions
         public void FileTypeResolveException_Serialization_PreservesData()
         {
             // Arrange
-            var message = "Test error message";
-            var innerException = new Exception("Inner exception");
-            var original = new FileTypeResolveException(message, innerException);
+            string message = "Test error message";
+            Exception innerException = new Exception("Inner exception");
+            FileTypeResolveException original = new FileTypeResolveException(
+                message,
+                innerException
+            );
 
             // Act - 직렬화 및 역직렬화
-            var serializer = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-            using var stream = new MemoryStream();
+            System.Runtime.Serialization.Formatters.Binary.BinaryFormatter serializer =
+                new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+            using MemoryStream stream = new MemoryStream();
             serializer.Serialize(stream, original);
             stream.Position = 0;
-            var deserialized = (FileTypeResolveException)serializer.Deserialize(stream);
+            FileTypeResolveException deserialized = (FileTypeResolveException)
+                serializer.Deserialize(stream);
 
             // Assert
             Assert.That(deserialized.Message, Is.EqualTo(original.Message));
-            Assert.That(deserialized.InnerException?.Message, Is.EqualTo(original.InnerException?.Message));
+            Assert.That(
+                deserialized.InnerException?.Message,
+                Is.EqualTo(original.InnerException?.Message)
+            );
         }
 
         /// <summary>
@@ -193,7 +229,10 @@ namespace FileExtensions.Exceptions
 
             // Assert
             Assert.That(exception.StackTrace, Is.Not.Null);
-            Assert.That(exception.StackTrace, Contains.Substring(nameof(FileTypeResolveException_PreservesStackTrace)));
+            Assert.That(
+                exception.StackTrace,
+                Contains.Substring(nameof(FileTypeResolveException_PreservesStackTrace))
+            );
         }
     }
 }

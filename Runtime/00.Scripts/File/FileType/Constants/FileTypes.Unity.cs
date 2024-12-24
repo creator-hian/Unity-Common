@@ -11,54 +11,87 @@ namespace Creator_Hian.Unity.Common
         /// Unity 관련 파일 타입 정의를 제공하는 정적 클래스입니다.
         /// </summary>
         public static class Unity
-        {// ReSharper disable MemberCanBePrivate.Global
+        { // ReSharper disable MemberCanBePrivate.Global
             /// <summary>
             /// Unity 씬(.unity) 파일 타입 정의
             /// </summary>
-            public static readonly FileTypeDefinition Scene = 
-                new(".unity", "Unity Scene", FileCategory.Unity.Scene, FileConstants.MimeTypes.Unity.Scene);
+            public static readonly FileTypeDefinition Scene = new(
+                ".unity",
+                "Unity Scene",
+                FileCategory.Unity.Scene,
+                FileConstants.MimeTypes.Unity.Scene
+            );
 
             /// <summary>
             /// Unity 프리팹(.prefab) 파일 타입 정의
             /// </summary>
-            public static readonly FileTypeDefinition Prefab = 
-                new(".prefab", "Unity Prefab", FileCategory.Unity.Prefab, FileConstants.MimeTypes.Unity.Prefab);
+            public static readonly FileTypeDefinition Prefab = new(
+                ".prefab",
+                "Unity Prefab",
+                FileCategory.Unity.Prefab,
+                FileConstants.MimeTypes.Unity.Prefab
+            );
 
             /// <summary>
             /// Unity 에셋(.asset) 파일 타입 정의
             /// </summary>
-            public static readonly FileTypeDefinition Asset = 
-                new(".asset", "Unity Asset", FileCategory.Unity.Asset, FileConstants.MimeTypes.Unity.Asset);
+            public static readonly FileTypeDefinition Asset = new(
+                ".asset",
+                "Unity Asset",
+                FileCategory.Unity.Asset,
+                FileConstants.MimeTypes.Unity.Asset
+            );
 
             /// <summary>
             /// Unity 메타(.meta) 파일 타입 정의
             /// </summary>
-            public static readonly FileTypeDefinition Meta = 
-                new(".meta", "Unity Meta", FileCategory.Unity.Asset, FileConstants.MimeTypes.Unity.Meta);
+            public static readonly FileTypeDefinition Meta = new(
+                ".meta",
+                "Unity Meta",
+                FileCategory.Unity.Asset,
+                FileConstants.MimeTypes.Unity.Meta
+            );
 
             /// <summary>
             /// Unity 머티리얼(.mat) 파일 타입 정의
             /// </summary>
-            public static readonly FileTypeDefinition Material = 
-                new(".mat", "Unity Material", FileCategory.Unity.Resource, FileConstants.MimeTypes.Unity.Material);
+            public static readonly FileTypeDefinition Material = new(
+                ".mat",
+                "Unity Material",
+                FileCategory.Unity.Resource,
+                FileConstants.MimeTypes.Unity.Material
+            );
 
             /// <summary>
             /// Unity 셰이더(.shader) 파일 타입 정의
             /// </summary>
-            public static readonly FileTypeDefinition Shader = 
-                new(".shader", "Unity Shader", FileCategory.Unity.Script, FileConstants.MimeTypes.Unity.Shader);
+            public static readonly FileTypeDefinition Shader = new(
+                ".shader",
+                "Unity Shader",
+                FileCategory.Unity.Script,
+                FileConstants.MimeTypes.Unity.Shader
+            );
 
             /// <summary>
             /// Unity 애니메이션(.anim) 파일 타입 정의
             /// </summary>
-            public static readonly FileTypeDefinition Animation = 
-                new(".anim", "Unity Animation", FileCategory.Unity.Animation, FileConstants.MimeTypes.Unity.Animation);
+            public static readonly FileTypeDefinition Animation = new(
+                ".anim",
+                "Unity Animation",
+                FileCategory.Unity.Animation,
+                FileConstants.MimeTypes.Unity.Animation
+            );
 
             /// <summary>
             /// Unity 애니메이터 컨트롤러(.controller) 파일 타입 정의
             /// </summary>
-            public static readonly FileTypeDefinition AnimatorController = 
-                new(".controller", "Unity Animator Controller", FileCategory.Unity.Animation, FileConstants.MimeTypes.Unity.AnimatorController);
+            public static readonly FileTypeDefinition AnimatorController = new(
+                ".controller",
+                "Unity Animator Controller",
+                FileCategory.Unity.Animation,
+                FileConstants.MimeTypes.Unity.AnimatorController
+            );
+
             // ReSharper restore MemberCanBePrivate.Global
 
             /// <summary>
@@ -84,9 +117,11 @@ namespace Creator_Hian.Unity.Common
             /// <returns>해당하는 파일 타입 정의, 없으면 null</returns>
             public static FileTypeDefinition GetByExtension(string extension)
             {
-                return GetAll().FirstOrDefault(fileType => 
-                    fileType.Extension.Equals(extension, StringComparison.OrdinalIgnoreCase));
+                return GetAll()
+                    .FirstOrDefault(fileType =>
+                        fileType.Extension.Equals(extension, StringComparison.OrdinalIgnoreCase)
+                    );
             }
         }
     }
-} 
+}

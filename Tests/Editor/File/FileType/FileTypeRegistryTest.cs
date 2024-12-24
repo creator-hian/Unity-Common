@@ -1,7 +1,7 @@
-using NUnit.Framework;
-using Creator_Hian.Unity.Common;
 using System;
 using System.Linq;
+using Creator_Hian.Unity.Common;
+using NUnit.Framework;
 
 /// <summary>
 /// FileTypeRegistry 클래스의 기능을 테스트합니다.
@@ -16,9 +16,9 @@ namespace FileExtensions.FileType
         [SetUp]
         public void Setup()
         {
-            #pragma warning disable CS0618
+#pragma warning disable CS0618
             FileTypeRegistry.ClearRegistryForTesting();
-            #pragma warning restore CS0618
+#pragma warning restore CS0618
         }
 
         /// <summary>
@@ -34,11 +34,15 @@ namespace FileExtensions.FileType
         public void RegisterFileType_ValidType_Succeeds()
         {
             // Arrange
-            var fileType = new FileTypeDefinition(".test", "Test File", FileCategory.Common.Text);
+            FileTypeDefinition fileType = new FileTypeDefinition(
+                ".test",
+                "Test File",
+                FileCategory.Common.Text
+            );
 
             // Act
             FileTypeRegistry.RegisterType(fileType);
-            var resolvedType = FileTypeRegistry.GetByExtension(".test");
+            FileTypeDefinition resolvedType = FileTypeRegistry.GetByExtension(".test");
 
             // Assert
             Assert.That(resolvedType, Is.EqualTo(fileType));
@@ -51,7 +55,9 @@ namespace FileExtensions.FileType
         public void RegisterFileType_NullType_ThrowsArgumentNullException()
         {
             // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => FileTypeRegistry.RegisterType(null));
+            _ = Assert.Throws<ArgumentNullException>(
+                static () => FileTypeRegistry.RegisterType(null)
+            );
         }
 
         /// <summary>
@@ -61,7 +67,7 @@ namespace FileExtensions.FileType
         public void GetFileType_UnregisteredExtension_ReturnsUnknownType()
         {
             // Act
-            var fileType = FileTypeRegistry.GetByExtension(".unknown");
+            FileTypeDefinition fileType = FileTypeRegistry.GetByExtension(".unknown");
 
             // Assert
             Assert.That(fileType.Category, Is.EqualTo(FileCategory.Common.Unknown));
@@ -81,16 +87,26 @@ namespace FileExtensions.FileType
         public void GetFileTypesByCategory_ReturnsCorrectTypes()
         {
             // Arrange
-            #pragma warning disable CS0618
+#pragma warning disable CS0618
             FileTypeRegistry.ClearRegistryForTesting();
-            #pragma warning restore CS0618
-            var type1 = new FileTypeDefinition(".txt", "Text File", FileCategory.Common.Text);
-            var type2 = new FileTypeDefinition(".doc", "Document File", FileCategory.Common.Text);
+#pragma warning restore CS0618
+            FileTypeDefinition type1 = new FileTypeDefinition(
+                ".txt",
+                "Text File",
+                FileCategory.Common.Text
+            );
+            FileTypeDefinition type2 = new FileTypeDefinition(
+                ".doc",
+                "Document File",
+                FileCategory.Common.Text
+            );
             FileTypeRegistry.RegisterType(type1);
             FileTypeRegistry.RegisterType(type2);
 
             // Act
-            var textTypes = FileTypeRegistry.GetTypesByCategory(FileCategory.Common.Text).ToList();
+            System.Collections.Generic.List<FileTypeDefinition> textTypes = FileTypeRegistry
+                .GetTypesByCategory(FileCategory.Common.Text)
+                .ToList();
 
             // Assert
             Assert.That(textTypes, Has.Count.EqualTo(2));
@@ -112,16 +128,28 @@ namespace FileExtensions.FileType
         public void GetFileTypesByMimeType_ReturnsCorrectTypes()
         {
             // Arrange
-            #pragma warning disable CS0618
+#pragma warning disable CS0618
             FileTypeRegistry.ClearRegistryForTesting();
-            #pragma warning restore CS0618
-            var type1 = new FileTypeDefinition(".txt", "Text File", FileCategory.Common.Text, "text/plain");
-            var type2 = new FileTypeDefinition(".log", "Log File", FileCategory.Common.Text, "text/plain");
+#pragma warning restore CS0618
+            FileTypeDefinition type1 = new FileTypeDefinition(
+                ".txt",
+                "Text File",
+                FileCategory.Common.Text,
+                "text/plain"
+            );
+            FileTypeDefinition type2 = new FileTypeDefinition(
+                ".log",
+                "Log File",
+                FileCategory.Common.Text,
+                "text/plain"
+            );
             FileTypeRegistry.RegisterType(type1);
             FileTypeRegistry.RegisterType(type2);
 
             // Act
-            var textTypes = FileTypeRegistry.GetTypesByMimeType("text/plain").ToList();
+            System.Collections.Generic.List<FileTypeDefinition> textTypes = FileTypeRegistry
+                .GetTypesByMimeType("text/plain")
+                .ToList();
 
             // Assert
             Assert.That(textTypes, Has.Count.EqualTo(2));
@@ -136,13 +164,21 @@ namespace FileExtensions.FileType
         public void RegisterType_DuplicateType_UpdatesExisting()
         {
             // Arrange
-            var type1 = new FileTypeDefinition(".txt", "Text File", FileCategory.Common.Text);
-            var type2 = new FileTypeDefinition(".txt", "Updated Text File", FileCategory.Common.Text);
+            FileTypeDefinition type1 = new FileTypeDefinition(
+                ".txt",
+                "Text File",
+                FileCategory.Common.Text
+            );
+            FileTypeDefinition type2 = new FileTypeDefinition(
+                ".txt",
+                "Updated Text File",
+                FileCategory.Common.Text
+            );
 
             // Act
             FileTypeRegistry.RegisterType(type1);
             FileTypeRegistry.RegisterType(type2);
-            var resolvedType = FileTypeRegistry.GetByExtension(".txt");
+            FileTypeDefinition resolvedType = FileTypeRegistry.GetByExtension(".txt");
 
             // Assert
             Assert.That(resolvedType, Is.EqualTo(type2));
@@ -155,13 +191,17 @@ namespace FileExtensions.FileType
         public void GetByExtension_CaseInsensitive_ReturnsCorrectType()
         {
             // Arrange
-            var fileType = new FileTypeDefinition(".TXT", "Text File", FileCategory.Common.Text);
+            FileTypeDefinition fileType = new FileTypeDefinition(
+                ".TXT",
+                "Text File",
+                FileCategory.Common.Text
+            );
             FileTypeRegistry.RegisterType(fileType);
 
             // Act
-            var resolvedType1 = FileTypeRegistry.GetByExtension(".txt");
-            var resolvedType2 = FileTypeRegistry.GetByExtension(".TXT");
-            var resolvedType3 = FileTypeRegistry.GetByExtension(".Txt");
+            FileTypeDefinition resolvedType1 = FileTypeRegistry.GetByExtension(".txt");
+            FileTypeDefinition resolvedType2 = FileTypeRegistry.GetByExtension(".TXT");
+            FileTypeDefinition resolvedType3 = FileTypeRegistry.GetByExtension(".Txt");
 
             // Assert
             Assert.That(resolvedType1, Is.EqualTo(fileType));
@@ -169,4 +209,4 @@ namespace FileExtensions.FileType
             Assert.That(resolvedType3, Is.EqualTo(fileType));
         }
     }
-} 
+}

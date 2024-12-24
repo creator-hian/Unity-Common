@@ -41,19 +41,25 @@
 
 ## [0.1.1] - 2024-12-05
 
+<!-- markdownlint-disable MD024 -->
 ### 추가
+<!-- markdownlint-enable MD024 -->
 
 - GitHub Release를 통한 자동 패키지 퍼블리싱 기능 추가
   - release 브랜치의 릴리스가 publish될 때 자동으로 GitHub Packages에 배포
   - GitHub Release UI를 통한 버전 관리 지원
 
+<!-- markdownlint-disable MD024 -->
 ### 변경
+<!-- markdownlint-enable MD024 -->
 
 - 패키지 배포 프로세스 개선
 
 ## [0.1.0] - 2024-12-05
 
+<!-- markdownlint-disable MD024 -->
 ### 추가
+<!-- markdownlint-enable MD024 -->
 
 - 파일 시스템 기능 개선 및 안정화
   - 파일 작업 기능 강화
@@ -73,7 +79,9 @@
 
 ## [0.0.1] - 2024-11-30
 
+<!-- markdownlint-disable MD024 -->
 ### 추가
+<!-- markdownlint-enable MD024 -->
 
 - 초기 패키지 구조 설정
 - 기본 파일 시스템 기능 구현

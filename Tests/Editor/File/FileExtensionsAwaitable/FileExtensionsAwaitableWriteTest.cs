@@ -2,7 +2,6 @@
 using System.IO;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using Creator_Hian.Unity.Common;
 
 namespace FileExtensions.Awaitable
 {
@@ -18,7 +17,10 @@ namespace FileExtensions.Awaitable
         public async Task WriteFileToPathAwaitable_ValidPath_CreatesFile()
         {
             // Act
-            await Creator_Hian.Unity.Common.FileExtensions.WriteFileToPathAwaitable(_testFile1, _testData);
+            await Creator_Hian.Unity.Common.FileExtensions.WriteFileToPathAwaitable(
+                _testFile1,
+                _testData
+            );
 
             // 파일 핸들이 해제될 때까지 잠시 대기
             await Task.Delay(100);
@@ -26,13 +28,20 @@ namespace FileExtensions.Awaitable
             // Assert
             Assert.That(File.Exists(_testFile1), Is.True);
             byte[] readData;
-            using (var fs = new FileStream(_testFile1, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using (
+                FileStream fs = new FileStream(
+                    _testFile1,
+                    FileMode.Open,
+                    FileAccess.Read,
+                    FileShare.ReadWrite
+                )
+            )
             {
                 readData = new byte[fs.Length];
-                await fs.ReadAsync(readData, 0, readData.Length);
+                _ = await fs.ReadAsync(readData, 0, readData.Length);
             }
             Assert.That(readData, Is.EqualTo(_testData));
         }
     }
 }
-#endif 
+#endif

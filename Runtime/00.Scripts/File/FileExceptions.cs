@@ -12,26 +12,23 @@ namespace Creator_Hian.Unity.Common
         /// <summary>
         /// DirectoryCreationException 클래스의 새 인스턴스를 초기화합니다.
         /// </summary>
-        public DirectoryCreationException()
-        { }
+        public DirectoryCreationException() { }
 
         /// <summary>
         /// 지정된 오류 메시지를 사용하여 DirectoryCreationException 클래스의 새 인스턴스를 초기화합니다.
         /// </summary>
         /// <param name="message">예외를 설명하는 메시지</param>
-        public DirectoryCreationException(string message) 
-            : base(message) 
-        { }
+        public DirectoryCreationException(string message)
+            : base(message) { }
 
         /// <summary>
-        /// 지정된 오류 메시지와 이 예외의 원인이 되는 내부 예외에 대한 참조를 사용하여 
+        /// 지정된 오류 메시지와 이 예외의 원인이 되는 내부 예외에 대한 참조를 사용하여
         /// DirectoryCreationException 클래스의 새 인스턴스를 초기화합니다.
         /// </summary>
         /// <param name="message">예외를 설명하는 메시지</param>
         /// <param name="innerException">현재 예외의 원인인 예외</param>
-        public DirectoryCreationException(string message, Exception innerException) 
-            : base(message, innerException) 
-        { }
+        public DirectoryCreationException(string message, Exception innerException)
+            : base(message, innerException) { }
     }
 
     /// <summary>
@@ -43,26 +40,23 @@ namespace Creator_Hian.Unity.Common
         /// <summary>
         /// FilePathException 클래스의 새 인스턴스를 초기화합니다.
         /// </summary>
-        public FilePathException()
-        { }
+        public FilePathException() { }
 
         /// <summary>
         /// 지정된 오류 메시지를 사용하여 FilePathException 클래스의 새 인스턴스를 초기화합니다.
         /// </summary>
         /// <param name="message">예외를 설명하는 메시지</param>
-        public FilePathException(string message) 
-            : base(message) 
-        { }
+        public FilePathException(string message)
+            : base(message) { }
 
         /// <summary>
-        /// 지정된 오류 메시지와 이 예외의 원인이 되는 내부 예외에 대한 참조를 사용하여 
+        /// 지정된 오류 메시지와 이 예외의 원인이 되는 내부 예외에 대한 참조를 사용하여
         /// FilePathException 클래스의 새 인스턴스를 초기화합니다.
         /// </summary>
         /// <param name="message">예외를 설명하는 메시지</param>
         /// <param name="innerException">현재 예외의 원인인 예외</param>
-        public FilePathException(string message, Exception innerException) 
-            : base(message, innerException) 
-        { }
+        public FilePathException(string message, Exception innerException)
+            : base(message, innerException) { }
     }
 
     /// <summary>
@@ -74,26 +68,23 @@ namespace Creator_Hian.Unity.Common
         /// <summary>
         /// FileWriteException 클래스의 새 인스턴스를 초기화합니다.
         /// </summary>
-        public FileWriteException()
-        { }
+        public FileWriteException() { }
 
         /// <summary>
         /// 지정된 오류 메시지를 사용하여 FileWriteException 클래스의 새 인스턴스를 초기화합니다.
         /// </summary>
         /// <param name="message">예외를 설명하는 메시지</param>
-        public FileWriteException(string message) 
-            : base(message) 
-        { }
+        public FileWriteException(string message)
+            : base(message) { }
 
         /// <summary>
-        /// 지정된 오류 메시지와 이 예외의 원인이 되는 내부 예외에 대한 참조를 사용하여 
+        /// 지정된 오류 메시지와 이 예외의 원인이 되는 내부 예외에 대한 참조를 사용하여
         /// FileWriteException 클래스의 새 인스턴스를 초기화합니다.
         /// </summary>
         /// <param name="message">예외를 설명하는 메시지</param>
         /// <param name="innerException">현재 예외의 원인인 예외</param>
-        public FileWriteException(string message, Exception innerException) 
-            : base(message, innerException) 
-        { }
+        public FileWriteException(string message, Exception innerException)
+            : base(message, innerException) { }
     }
 
     /// <summary>
@@ -105,25 +96,22 @@ namespace Creator_Hian.Unity.Common
         /// <summary>
         /// FileOperationException 클래스의 새 인스턴스를 초기화합니다.
         /// </summary>
-        public FileOperationException()
-        { }
+        public FileOperationException() { }
 
         /// <summary>
         /// 지정된 오류 메시지를 사용하여 FileOperationException 클래스의 새 인스턴스를 초기화합니다.
         /// </summary>
         /// <param name="message">예외를 설명하는 메시지</param>
-        public FileOperationException(string message) 
-            : base(message) 
-        { }
+        public FileOperationException(string message)
+            : base(message) { }
 
         /// <summary>
-        /// 지정된 오류 메시지와 이 예외의 원인이 되는 내부 예외에 대한 참조를 사용하여 
+        /// 지정된 오류 메시지와 이 예외의 원인이 되는 내부 예외에 대한 참조를 사용하여
         /// FileOperationException 클래스의 새 인스턴스를 초기화합니다.
         /// </summary>
         /// <param name="message">예외를 설명하는 메시지</param>
         /// <param name="innerException">현재 예외의 원인인 예외</param>
-        public FileOperationException(string message, Exception innerException) 
-            : base(message, innerException) 
-        { }
+        public FileOperationException(string message, Exception innerException)
+            : base(message, innerException) { }
     }
 }

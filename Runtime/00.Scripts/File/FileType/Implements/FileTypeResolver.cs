@@ -12,7 +12,7 @@ namespace Creator_Hian.Unity.Common
     {
         private static FileTypeResolver _instance;
         private static readonly object _lock = new();
-        
+
         private readonly Dictionary<string, FileTypeDefinition> _typesByExtension;
         private readonly Dictionary<FileCategory, HashSet<FileTypeDefinition>> _typesByCategory;
         private readonly Dictionary<string, HashSet<FileTypeDefinition>> _typesByMimeType;
@@ -37,17 +37,21 @@ namespace Creator_Hian.Unity.Common
 
         private FileTypeResolver()
         {
-            _typesByExtension = new Dictionary<string, FileTypeDefinition>(StringComparer.OrdinalIgnoreCase);
+            _typesByExtension = new Dictionary<string, FileTypeDefinition>(
+                StringComparer.OrdinalIgnoreCase
+            );
             _typesByCategory = new Dictionary<FileCategory, HashSet<FileTypeDefinition>>();
-            _typesByMimeType = new Dictionary<string, HashSet<FileTypeDefinition>>(StringComparer.OrdinalIgnoreCase);
-            
+            _typesByMimeType = new Dictionary<string, HashSet<FileTypeDefinition>>(
+                StringComparer.OrdinalIgnoreCase
+            );
+
             FileCategory.EnsureInitialized();
             RegisterBuiltInTypes();
         }
 
         private void RegisterBuiltInTypes()
         {
-            foreach (var type in FileTypes.GetAllTypes())
+            foreach (FileTypeDefinition type in FileTypes.GetAllTypes())
             {
                 RegisterType(type);
             }
@@ -57,39 +61,52 @@ namespace Creator_Hian.Unity.Common
         {
             _typesByExtension[definition.Extension] = definition;
 
-            if (!_typesByCategory.TryGetValue(definition.Category, out var categoryTypes))
+            if (
+                !_typesByCategory.TryGetValue(
+                    definition.Category,
+                    out HashSet<FileTypeDefinition> categoryTypes
+                )
+            )
             {
                 categoryTypes = new HashSet<FileTypeDefinition>();
                 _typesByCategory[definition.Category] = categoryTypes;
             }
-            categoryTypes.Add(definition);
+            _ = categoryTypes.Add(definition);
 
-            foreach (var mimeType in definition.MimeTypes)
+            foreach (string mimeType in definition.MimeTypes)
             {
-                if (!_typesByMimeType.TryGetValue(mimeType, out var mimeTypes))
+                if (
+                    !_typesByMimeType.TryGetValue(
+                        mimeType,
+                        out HashSet<FileTypeDefinition> mimeTypes
+                    )
+                )
                 {
                     mimeTypes = new HashSet<FileTypeDefinition>();
                     _typesByMimeType[mimeType] = mimeTypes;
                 }
-                mimeTypes.Add(definition);
+                _ = mimeTypes.Add(definition);
             }
         }
 
         public IFileTypeInfo GetFileType(string path)
         {
             if (string.IsNullOrEmpty(path))
+            {
                 throw new ArgumentNullException(nameof(path));
+            }
 
             try
             {
                 string extension = Path.GetExtension(path).ToLowerInvariant();
-                
-                if (string.IsNullOrEmpty(extension))
-                    return CreateUnknownType(extension);
 
-                return _typesByExtension.TryGetValue(extension, out var type)
-                    ? type
-                    : CreateUnknownType(extension);
+                return string.IsNullOrEmpty(extension)
+                    ? CreateUnknownType(extension)
+                    : (IFileTypeInfo)(
+                        _typesByExtension.TryGetValue(extension, out FileTypeDefinition type)
+                            ? type
+                            : CreateUnknownType(extension)
+                    );
             }
             catch (Exception ex)
             {
@@ -99,31 +116,36 @@ namespace Creator_Hian.Unity.Common
 
         public IReadOnlyCollection<IFileTypeInfo> GetTypesByCategory(FileCategory category)
         {
-            return _typesByCategory.TryGetValue(category, out var types)
+            return _typesByCategory.TryGetValue(category, out HashSet<FileTypeDefinition> types)
                 ? types
                 : Array.Empty<IFileTypeInfo>();
         }
 
         public bool IsTypeOf(string path, FileCategory category)
         {
-            var fileType = GetFileType(path);
+            IFileTypeInfo fileType = GetFileType(path);
             return fileType.Category == category;
         }
 
         public IReadOnlyCollection<IFileTypeInfo> GetTypesByMimeType(string mimeType)
         {
             if (string.IsNullOrEmpty(mimeType))
+            {
                 return Array.Empty<IFileTypeInfo>();
+            }
 
             try
             {
-                return _typesByMimeType.TryGetValue(mimeType, out var types)
+                return _typesByMimeType.TryGetValue(mimeType, out HashSet<FileTypeDefinition> types)
                     ? types
                     : Array.Empty<IFileTypeInfo>();
             }
             catch (Exception ex)
             {
-                throw new FileTypeResolveException($"MIME 타입으로 파일 타입을 조회하는 중 오류가 발생했습니다: {mimeType}", ex);
+                throw new FileTypeResolveException(
+                    $"MIME 타입으로 파일 타입을 조회하는 중 오류가 발생했습니다: {mimeType}",
+                    ex
+                );
             }
         }
 
@@ -133,7 +155,8 @@ namespace Creator_Hian.Unity.Common
                 extension,
                 "Unknown File Type",
                 FileCategory.Common.Unknown,
-                FileConstants.MimeTypes.Default);
+                FileConstants.MimeTypes.Default
+            );
         }
     }
-} 
+}

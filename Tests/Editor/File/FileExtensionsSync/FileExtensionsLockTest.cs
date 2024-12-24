@@ -1,7 +1,5 @@
 using System.IO;
 using NUnit.Framework;
-using UnityEngine;
-using Creator_Hian.Unity.Common;
 
 namespace FileExtensions.Sync
 {
@@ -20,7 +18,12 @@ namespace FileExtensions.Sync
             string filePath = Path.Combine(_testDirectoryPath, "readLocked.txt");
             Creator_Hian.Unity.Common.FileExtensions.WriteFileToPath(filePath, _testData);
 
-            using var stream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using FileStream stream = File.Open(
+                filePath,
+                FileMode.Open,
+                FileAccess.Read,
+                FileShare.ReadWrite
+            );
 
             // Act & Assert
             Assert.That(Creator_Hian.Unity.Common.FileExtensions.IsFileLocked(filePath), Is.False);
@@ -36,10 +39,15 @@ namespace FileExtensions.Sync
             string filePath = Path.Combine(_testDirectoryPath, "writeLocked.txt");
             Creator_Hian.Unity.Common.FileExtensions.WriteFileToPath(filePath, _testData);
 
-            using var stream = File.Open(filePath, FileMode.Open, FileAccess.Write, FileShare.None);
+            using FileStream stream = File.Open(
+                filePath,
+                FileMode.Open,
+                FileAccess.Write,
+                FileShare.None
+            );
 
             // Act & Assert
             Assert.That(Creator_Hian.Unity.Common.FileExtensions.IsFileLocked(filePath), Is.True);
         }
     }
-} 
+}

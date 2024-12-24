@@ -2,10 +2,9 @@ using System;
 using System.IO;
 using System.Text;
 using System.Threading;
+using Creator_Hian.Unity.Common.Tests;
 using NUnit.Framework;
 using UnityEngine;
-using Creator_Hian.Unity.Common;
-using Creator_Hian.Unity.Common.Tests;
 
 namespace FileExtensions.Sync
 {
@@ -33,9 +32,10 @@ namespace FileExtensions.Sync
             _testDirectoryPath = Path.Combine(
                 Application.temporaryCachePath,
                 "FileExtensionsTest",
-                Guid.NewGuid().ToString());
+                Guid.NewGuid().ToString()
+            );
 
-            Directory.CreateDirectory(_testDirectoryPath);
+            _ = Directory.CreateDirectory(_testDirectoryPath);
             // 테스트용 데이터 생성
             _testData = Encoding.UTF8.GetBytes(FileTypeTestConstants.Contents.TextContent);
         }
@@ -76,4 +76,4 @@ namespace FileExtensions.Sync
             }
         }
     }
-} 
+}

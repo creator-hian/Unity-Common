@@ -1,7 +1,7 @@
 using System.Diagnostics;
-using NUnit.Framework;
 using Creator_Hian.Unity.Common;
 using Creator_Hian.Unity.Common.Tests;
+using NUnit.Framework;
 
 /// <summary>
 /// FileTypeResolver의 성능을 테스트합니다.
@@ -31,30 +31,32 @@ namespace FileExtensions.FileType
         public void GetFileType_Performance_MultipleIterations()
         {
             // Arrange
-            var stopwatch = new Stopwatch();
-            var testPaths = new[]
+            Stopwatch stopwatch = new Stopwatch();
+            string[] testPaths = new[]
             {
                 $"{FileTypeTestConstants.Paths.ValidFileName}{FileTypeTestConstants.Extensions.Text}",
                 $"{FileTypeTestConstants.Paths.ValidFileName}{FileTypeTestConstants.Extensions.Png}",
                 $"{FileTypeTestConstants.Paths.ValidFileName}{FileTypeTestConstants.Extensions.Scene}",
-                $"{FileTypeTestConstants.Paths.ValidFileName}{FileTypeTestConstants.Extensions.Unknown}"
+                $"{FileTypeTestConstants.Paths.ValidFileName}{FileTypeTestConstants.Extensions.Unknown}",
             };
 
             // Act
             stopwatch.Start();
             for (int i = 0; i < FileTypeTestConstants.Performance.DefaultIterationCount; i++)
             {
-                foreach (var path in testPaths)
+                foreach (string path in testPaths)
                 {
-                    _resolver.GetFileType(path);
+                    _ = _resolver.GetFileType(path);
                 }
             }
             stopwatch.Stop();
 
             // Assert
-            Assert.That(stopwatch.ElapsedMilliseconds, 
-                Is.LessThan(FileTypeTestConstants.Performance.DefaultTimeoutMilliseconds), 
-                "파일 타입 해석이 너무 오래 걸립니다");
+            Assert.That(
+                stopwatch.ElapsedMilliseconds,
+                Is.LessThan(FileTypeTestConstants.Performance.DefaultTimeoutMilliseconds),
+                "파일 타입 해석이 너무 오래 걸립니다"
+            );
         }
 
         /// <summary>
@@ -66,29 +68,31 @@ namespace FileExtensions.FileType
         public void GetTypesByCategory_Performance_MultipleIterations()
         {
             // Arrange
-            var stopwatch = new Stopwatch();
-            var categories = new[]
+            Stopwatch stopwatch = new Stopwatch();
+            FileCategory[] categories = new[]
             {
                 FileCategory.Common.Image,
                 FileCategory.Unity.Animation,
-                FileCategory.Common.Text
+                FileCategory.Common.Text,
             };
 
             // Act
             stopwatch.Start();
             for (int i = 0; i < FileTypeTestConstants.Performance.DefaultIterationCount; i++)
             {
-                foreach (var category in categories)
+                foreach (FileCategory category in categories)
                 {
-                    _resolver.GetTypesByCategory(category);
+                    _ = _resolver.GetTypesByCategory(category);
                 }
             }
             stopwatch.Stop();
 
             // Assert
-            Assert.That(stopwatch.ElapsedMilliseconds, 
+            Assert.That(
+                stopwatch.ElapsedMilliseconds,
                 Is.LessThan(FileTypeTestConstants.Performance.DefaultTimeoutMilliseconds),
-                "카테고리별 타입 조회가 너무 오래 걸립니다");
+                "카테고리별 타입 조회가 너무 오래 걸립니다"
+            );
         }
     }
-} 
+}

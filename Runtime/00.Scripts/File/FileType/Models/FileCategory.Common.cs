@@ -11,11 +11,12 @@ namespace Creator_Hian.Unity.Common
         {
             // ReSharper disable once InconsistentNaming
             private static readonly FileCategory _unknown = new("Unknown", "Unknown File Type");
+
             /// <summary>
             /// 알 수 없는 파일 타입을 나타내는 카테고리입니다.
             /// </summary>
             public static FileCategory Unknown => _unknown;
-            
+
             // ReSharper disable MemberCanBePrivate.Global
             /// <summary>
             /// 텍스트 파일을 나타내는 카테고리입니다.
@@ -51,6 +52,7 @@ namespace Creator_Hian.Unity.Common
             /// 데이터 파일을 나타내는 카테고리입니다.
             /// </summary>
             public static readonly FileCategory Data = new("Data", "Data File");
+
             // ReSharper restore MemberCanBePrivate.Global
 
             /// <summary>
@@ -69,4 +71,4 @@ namespace Creator_Hian.Unity.Common
             }
         }
     }
-} 
+}

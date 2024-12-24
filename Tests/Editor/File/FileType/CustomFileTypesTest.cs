@@ -1,6 +1,6 @@
-using NUnit.Framework;
 using Creator_Hian.Unity.Common;
 using Creator_Hian.Unity.Common.Tests;
+using NUnit.Framework;
 
 // ReSharper disable once CheckNamespace
 namespace FileExtensions.FileType
@@ -35,12 +35,12 @@ namespace FileExtensions.FileType
         public void GetFileType_CustomTypes_ReturnsCorrectType()
         {
             // Arrange & Act
-            var markdownType = _resolver.GetFileType("test.md");
-            var pythonType = _resolver.GetFileType("script.py");
+            IFileTypeInfo markdownType = _resolver.GetFileType("test.md");
+            IFileTypeInfo pythonType = _resolver.GetFileType("script.py");
 
             // Assert
             Assert.That(markdownType.Category, Is.EqualTo(CustomCategories.Document));
             Assert.That(pythonType.Category, Is.EqualTo(CustomCategories.Script));
         }
     }
-} 
+}
